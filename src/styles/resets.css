@@ -1,0 +1,19 @@
+/*----------------------------------------------------------*/
+/**
+* RESETS
+*/
+/*----------------------------------------------------------*/
+/**
+* BUTTON
+*/
+button {
+    cursor: pointer;
+    user-select: none;
+    pointer-events: all;
+    outline: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: var(--color-font);
+    background-color: #fff;
+}

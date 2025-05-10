@@ -1,0 +1,146 @@
+/*----------------------------------------------------------*/
+/**
+* IMPORTS
+*/
+/*----------------------------------------------------------*/
+@import url(./resets.css);
+@import url(./rotors.css);
+@import url(./keyboard.css);
+/*----------------------------------------------------------*/
+/**
+* CONSTANTS
+*/
+/*----------------------------------------------------------*/
+:root {
+  --radius: 4px;
+  /**
+  * COLORS
+  */
+  --color-border: #333;
+  --color-font: #333;
+  /*--color-bkrnd: #f4f4f4;*/
+  --color-bkrnd: #bebebe;
+}
+/*----------------------------------------------------------*/
+/**
+* ALL
+*/
+/*----------------------------------------------------------*/
+* {
+  box-sizing: border-box;
+}
+/*----------------------------------------------------------*/
+/**
+* STYLES
+*/
+/*----------------------------------------------------------*/
+body {
+  /**
+  * position
+  */
+  margin: 0;
+  padding: 0;
+  /**
+  * font
+  */
+  font-family: sans-serif;
+  /**
+  * display
+  */
+  background-color: var(--color-bkrnd);
+}
+/*----------------------------------------------------------*/
+/**
+* HEADER
+*/
+/*----------------------------------------------------------*/
+header {
+  /**
+  * position
+  */
+  padding: 1em;
+  /**
+  * font
+  */
+  color: var(--color-font);
+}
+/*----------------------------------------------------------*/
+/**
+* NAV
+*/
+/*----------------------------------------------------------*/
+nav {
+  margin: 0;
+  padding: 0.5em;
+  background-color: #333;
+}  
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-around;
+}
+nav a {
+  text-decoration: none;
+  color: #333;
+  padding: 0.5em 1em;
+}
+/*----------------------------------------------------------*/
+/**
+* MAIN
+*/
+/*----------------------------------------------------------*/
+main {
+  /**
+  * Display
+  */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /**
+  * Position
+  */
+  padding: 1rem;
+}
+/*----------------------------------------------------------*/
+/**
+* SECTION
+*/
+/*----------------------------------------------------------*/
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/*----------------------------------------------------------*/
+/**
+* FOOTER
+*/
+/*----------------------------------------------------------*/
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1em;
+}
+/*----------------------------------------------------------*/
+/**
+* MEDIA QUERIES
+*/
+/*----------------------------------------------------------*/
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row; /* Arrange items horizontally */
+    flex-wrap: nowrap; /* Prevent wrapping by default */
+  }
+
+  main {
+    flex-grow: 1; /* Allow main content to expand */
+  }
+
+  .sidebar {
+    width: 200px; /* Example fixed width for sidebar */
+  }
+}

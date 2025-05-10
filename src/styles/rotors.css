@@ -1,0 +1,58 @@
+/**
+*   ROTOR STYLESHEET
+*/
+/**
+* ROTORS CONTAINER
+*/
+section#rotors {
+  /**
+  * Position
+  */
+  padding: 0.5rem;
+  /**
+  * Display
+  */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /**
+  * Border
+  */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  /**
+  * Bkrnd
+  */
+  background-color: #999;
+}
+/**
+* ROTOR CASING
+*/
+.rotor--casing {
+  /**
+  * Display
+  */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+/**
+* ROTOR WINDOW
+*/
+.rotor--window {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2em; /* Adjust as needed */
+    height: 2em; /* Adjust to match width for a square look */
+    background-color: #333; /* Dark background, common for the Enigma */
+    color: #f0f0f0; /* Light text color for visibility */
+    font-family: monospace; /* Mimic the fixed-width type */
+    font-size: 1.5em; /* Size of the displayed letter */
+    border: 1px solid #555; /* Subtle border for definition */
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+    border-radius: var(--radius);
+    margin: 0.25rem;
+  }

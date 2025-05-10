@@ -1,0 +1,237 @@
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD CONTAINER
+*/
+/*----------------------------------------------------------*/
+.keyboard--container {
+    /**
+    *   POSITION
+    */
+    margin: 1rem;
+    padding: 1rem;
+    /**
+    *   Display
+    */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /**
+    *   Border
+    */
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    /**
+    *   Shadow
+    */
+    
+}
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD ROWS
+*/
+/*----------------------------------------------------------*/
+.keyboard--row {
+    /**
+    *   position
+    */
+    margin: 0.5rem 0;
+    /**
+    *   display
+    */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD KEY
+*/
+/*----------------------------------------------------------*/
+div.keyboard--key,
+button.keyboard--key {
+    /**
+    *   Vars
+    */
+    --key-size: 3rem;
+    --key-boarder: 1px solid #555;
+    --key-transition: all 0.2s ease-in;
+    /**
+    *   User
+    */
+    user-select: none;
+    /**
+    *   Display
+    */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    /**
+    *   position
+    */
+    margin: 0.25rem;
+    width: var(--key-size);
+    height: var(--key-size);
+    /**
+    *   Border
+    */
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    /**
+    *   Font
+    */
+    font-family: monospace;
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    /**
+    *   Animation
+    */
+    transition: var(--key-transition);
+}
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD KEY: INPUT
+*/
+/*----------------------------------------------------------*/
+button.keyboard--key.--input {
+    /**
+    *   Border
+    */
+    border-color: var(--color-border);
+    /**
+    *   Display
+    */
+    background-color: #e0e0e0;
+    /**
+    *   Font
+    */
+    color: var(--color-border);
+    /**
+    *   Shadow
+    */
+    box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);
+}
+button.keyboard--key.--input:hover {
+    /**
+    *   Display
+    */
+    background-color: #fff;
+    /**
+    *   Shadow
+    */
+    box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.2);
+    /**
+    *   Animation
+    */
+    transform: translateY(-2px);
+}
+button.keyboard--key.--input:active {
+    /**
+    *   Display
+    */
+    background-color: #cfcfcf;
+    /**
+    *   Shadow
+    */
+    box-shadow: inset 2px 2px 3px 1px rgba(0, 0, 0, 0.2);
+    /**
+    *   Animation
+    */
+    transform: translateY(2px);
+}
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD KEY: OUTPUT
+*/
+/*----------------------------------------------------------*/
+div.keyboard--key.--output {
+    /**
+    *   Position
+    */
+    position: relative;
+    /**
+    *   Border
+    */
+    border-color: var(--color-border);
+    /**
+    *   Display
+    */
+    background-color: #252525;
+    /**
+    *   Font
+    */
+    color: #555;
+    /**
+    *   Shadow
+    */
+    box-shadow: inset 2px 2px 2px 1px rgba(0, 0, 0, 0.3);
+}
+div.keyboard--key.--output::after {
+    /**
+    *   Vars
+    */
+    --bulb-size: calc(var(--key-size) / 4);
+    /**
+    *   Position
+    */
+    position: absolute;
+    content: '';
+    width: 10px;
+    height: 10px;
+    /**
+    *   Border
+    */
+    border-radius: 50%;
+    /**
+    *   Display
+    */
+    background-color: rgba(255, 223, 78, 0.0);
+    /**
+    *   Animation
+    */
+    transition: var(--key-transition);
+}
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD KEY: OUTPUT (false)
+*/
+/*----------------------------------------------------------*/
+div.keyboard--key.--output[data-enabled="false"] {
+    /**
+    *   Font
+    */
+    color: #555;
+}
+div.keyboard--key.--output[data-enabled="false"]::after {
+    /**
+    *   Display
+    */
+    background-color: rgba(255, 255, 255, 0.0);
+    /**
+    *   Shadow
+    */
+    box-shadow: 0px 0px var(--bulb-size) var(--bulb-size) rgba(255, 255, 255, 0.0);
+}
+/*----------------------------------------------------------*/
+/**
+*   KEYBOARD KEY: OUTPUT (true)
+*/
+/*----------------------------------------------------------*/
+div.keyboard--key.--output[data-enabled="true"] {
+    /**
+    *   Font
+    */
+    color: #fff;
+}
+div.keyboard--key.--output[data-enabled="true"]::after {
+    /**
+    *   Display
+    */
+    background-color: rgba(255, 255, 255, 0.5);
+    /**
+    *   Shadow
+    */
+    box-shadow: 0px 0px var(--bulb-size) var(--bulb-size) rgba(255, 255, 255, 0.5);
+}

@@ -4,7 +4,7 @@
 export const rotor_wiring = {
     "I": 'EKMFLGDQVZNTOWYHXUSPAIBRCJ'.split(''),
     "II": 'AJDKSIRUXBLHWTMCQGZNPYFVOE'.split(''),
-    "IIII": 'BDFHJLCPRTXVZNYEIWGAKMUSQO'.split(''),
+    "III": 'BDFHJLCPRTXVZNYEIWGAKMUSQO'.split(''),
     "IV": 'ESOVPZJAYQUIRHXLNFTGKDCMWB'.split(''),
     "V": 'VZBRGITYUPSDNHLXAWMJQOFECK'.split(''),
     "VI": 'JPGVOUMFYQBENHZRDKASXLICTW'.split(''),

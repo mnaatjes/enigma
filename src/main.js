@@ -5,19 +5,23 @@
  * 
  * @description Main js file
  */
+import { Ringstellung } from "./components/Ringstellung.js";
 import { rotor_wiring, rotor_notches } from "./constants/rotors.js";
 import { reflector_wiring } from "./constants/reflectors.js";
 import { Rotor } from "./components/Rotor.js";
-
+import { Keyboard } from "./components/Keyboard.js";
+import { KEYBOARD_TYPE } from "./constants/settings.js";
 /**
  * HTML Elements
  */
-const rotors    = document.getElementById('rotors');
-const display   = document.getElementById('display');
-const keyboard  = document.getElementById('keyboard');
+const rotors    = new Ringstellung(document.getElementById('rotors'));
+const lampboard = new Keyboard(document.getElementById('display'), KEYBOARD_TYPE.output);
+const keyboard  = new Keyboard(document.getElementById('keyboard'));
 const plugboard = document.getElementById('plugboard');
 /**
- * Components
+ * Debugging
  */
-const rotor = new Rotor(rotor_wiring.I);
-rotor.debug();
+rotors.render();
+keyboard.render();
+lampboard.render();
+rotors.rotors[1].step();
