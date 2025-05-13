@@ -6,10 +6,18 @@ import { STATOR, DEBUG, ETW, ROTORS } from "./constants.js";
 export class TestRotor {
     /**
      * Character representing the initial position of the visible ring
+     * - This is the Initial Position
+     * - Visible part of Dial
      * @type {string}
      * @example "Z"
      */
     start;
+    /**
+     * Ring Setting
+     * @type {string}
+     * @example "A"
+     */
+    setting;
     /**
      * Represents the lead Stator Array character indexed to ETW:
      * - Initial is based off start character
