@@ -10,19 +10,22 @@ export const ROTORS = {
         order: 0,
         wiring: "EKMFLGDQVZNTOWYHXUSPAIBRCJ".split(""),
         notch: "Q",
-        start: "Z"
+        start: "Z",
+        ring: "Z"
     },
     "II": {
         order: 1,
         wiring: "AJDKSIRUXBLHWTMCQGZNPYFVOE".split(""),
         notch: "E",
-        start: "A"
+        start: "A",
+        ring: "A"
     },
     "III": {
         order: 2,
         wiring: "BDFHJLCPRTXVZNYEIWGAKMUSQO".split(""),
         notch: "V",
-        start: "A"
+        start: "A",
+        ring: "A"
     }
 };
 export const DEBUG = false;

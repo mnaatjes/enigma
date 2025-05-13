@@ -38,7 +38,7 @@ export class TestRotor {
      * @param {string} start 
      */
     /*----------------------------------------------------------*/
-    constructor(wiring, notch, name, order, start){
+    constructor(wiring, notch, name, order, start, ring){
         /**
          * General Properties
          */
@@ -48,23 +48,50 @@ export class TestRotor {
         /**
          * Static Arrays
          */
-        this.etw        = ETW;  // Default alphabet static
-        this.default    = wiring; // Default wiring static
+        this.etw        = ETW;
+        this.default    = wiring;
         /**
          * Dynamic Arrays
          */
         this.stator     = STATOR;
         this.wiring     = wiring;
         /**
-         * Rotor Specific Settings
+         * Rotor Specific Settings:
+         * - Checks starting character
+         * - Initializes Rotor start position (Stator and Wiring)
          */
-        this.start      = this.validateStart(start);
-        this.position   = this.initPosition(this.start);
-        this.offset     = this.initOffset(this.position);
+        this.start      = this.#validateStart(start);
+        /**
+         * 
+         */
+        this.ring       = ring;
+        /**
+         * Ring Setting (Offset): Fixed (static) rotational position of the alphabet ring relative to the wiring
+         * - Fixed rotational position of alphabet ring
+         * - Relative to internal wiring
+         * - Affects turnover notch:
+         *      - Notch attached to the alphabet ring
+         *      - Changes WHEN a rotor will cause the next rotor to step
+         * - This is the offset
+         * - Adjusts the internal wiring (gears) relative to the letters that appear
+         */
+        this.offset     = this.#initOffset();
+        /**
+         * Initial Position:
+         * - Grundstellung: [Rotor] Start Position
+         * - Refers to the Letter visible in the visible window
+         * - TODO: Should base on ETW or Stator?
+         * @uses start parameter to derive index from ETW?? (static) alphabet
+         */
+        this.position   = 0;
         /**
          * HTML | Rendering Properties
          */
-        this.node       = this.createNode();
+        this.node       = this.#createNode();
+        /**
+         * INIT ROTORS
+         */
+        this.initRotors();
     }
     /*----------------------------------------------------------*/
     /**
@@ -84,14 +111,78 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
+     * Initialize Rotors
+     */
+    /*----------------------------------------------------------*/
+    initRotors(){
+        if(this.order === 0){
+            /**
+             * Shift Stator and Wiring:
+             * - Get lead letter this.stator[0] from stator
+             * - Stator index == 0
+             * - Rotate stator array until start index is lead letter
+             */
+            const start_index = this.etw.indexOf(this.start);
+            this.debugPosition();
+            /**
+             * Rotate Rotor (wiring and stator) to initial position
+             */
+            for(let i = 0; i < start_index; i++){
+                this.rotate();
+            }
+            /**
+             * Rotate ETW based on Ring Setting
+             */
+            const ring_index = this.etw.indexOf(this.ring);
+            for(let i = 0; i < ring_index; i++){
+                this.rotateETW();
+            }
+            this.debugPosition();
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Rotate ETW
+     */
+    /*----------------------------------------------------------*/
+    rotateETW(){
+        const copy      = [...this.etw];
+        const removed   = copy.shift();
+        copy.push(removed);
+        this.etw     = copy;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Debug Position
+     */
+    /*----------------------------------------------------------*/
+    debugPosition(){
+        console.log(
+            " HEAD :", this.stator[0], 0,
+            '\n',
+            "RING :", this.ring, this.etw.indexOf(this.ring),
+            '\n',
+            "START:", this.start, this.etw.indexOf(this.start),
+            '\n',
+            "POS  :", this.getCurrent(), this.position,
+            '\n',
+            "OFF  :", this.getOffset()
+        );
+        this.debugRotors();
+        console.log('---------------------------------------------');
+    }
+    /*----------------------------------------------------------*/
+    /**
      * Validates Incoming start character
+     * @private
      * @param {string} character
+     * 
      * @return {string} character upper case
      * @throws {TypeError} Not string | Is Numeric | Is not alphabetical
      * @throws {RangeError} Larger than 1 character in length
      */
     /*----------------------------------------------------------*/
-    validateStart(character){
+    #validateStart(character){
         /**
          * Validate:
          * - String
@@ -118,44 +209,85 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
-     * Initalizes starting position:
+     * Initializes starting position:
      * - Initialized from this.starts
      * - Dynamic and will advance with each rotation
+     * 
+     * @private
      * @uses this.start
-     * @returns {int}
      * @example start = "Z" -> position = 25
      * 
+     * @returns {int}
+     * @throws {ReferenceError} Start not set
      */
     /*----------------------------------------------------------*/
-    initPosition(){}
+    #initPosition(){
+        /**
+         * Check that start is set
+         */
+        if(this.start !== undefined && this.start !== null && this.etw.includes(this.start)){
+            return 0;
+        } else {
+            throw new ReferenceError('Start position has not been set!');
+        }
+    }
     /*----------------------------------------------------------*/
     /**
      * initializes offset value:
      * - Value never changes from initial
      * - Static
+     * 
+     * @private
      * @uses this.start
-     * @returns {int}
      * @example start = "Z" -> position = 25
      * 
+     * @returns {int} Static value derived from initial starting character and position
+     * @throws {ReferenceError} Start not set
      */
     /*----------------------------------------------------------*/
-    initOffset(){}
+    #initOffset(){
+        /**
+         * Check that start is set
+         */
+        if(this.start !== undefined && this.start !== null && this.etw.includes(this.start)){
+            /**
+             * Return index of offset
+             */
+            return this.etw.indexOf(this.start);
+        } else {
+            throw new ReferenceError('Start position has not been set!');
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Debugging Method: Show Stator and Wiring
+     * 
+     * @remarks Displays this.stator and this.wiring fo rotor in console
+     */
+    /*----------------------------------------------------------*/
+    debugRotors(){
+        console.log(
+            " STATOR", this.stator.join("-"),'\n',
+            "WIRING", this.wiring.join("-"), '\n',
+            "ETW   ", this.etw.join("-")
+        );
+    }
     /*----------------------------------------------------------*/
     /**
      * Gets the current character (in the view window):
-     * - Based on the ETW array (static) of the position index (dynamic)
+     * - Based on the Stator Array
      * @returns {string}
      * @example "A"
      */
     /*----------------------------------------------------------*/
-    getCurrent(){return this.etw[this.position];}
+    getCurrent(){return ETW[this.position];}
     /*----------------------------------------------------------*/
     /**
      * Gets the current position (which changes by rotation) of the rotor
      * @returns {int}
      */
     /*----------------------------------------------------------*/
-    getPosition(){return this.position;}
+    //getPosition(){return this.stator.indexOf(this.getCurrent());}
     /*----------------------------------------------------------*/
     /**
      * Gets the offset integer value set at the beginning of the rotor initiation
@@ -163,36 +295,61 @@ export class TestRotor {
      */
     /*----------------------------------------------------------*/
     getOffset(){return this.offset;}
+    /*----------------------------------------------------------*/
     /**
-     * INIT ROTOR POSITION
+     * Steps position
+     * - Advances position by 1
+     * - Sets this.position
+     * - For use in this.rotate()
+     * @private
+     * @uses this.etw
+     * 
+     * @returns {void} Sets this.position
      */
-    initRotor(start){
-        const index_stator  = 0;
-        const char_stator   = this.stator[index_stator];
-        const index_start   = this.etw.indexOf(start);
-        console.log("CHAR STATOR:", char_stator, "STATOR:", this.stator.join(""), "WIRING:", this.wiring.join(""));
-    }
+    /*----------------------------------------------------------*/
+    #stepPosition(){this.position = (this.position + 1) % this.etw.length;}
+    /*----------------------------------------------------------*/
     /**
-     * CREATE NODE
+     * Creates HTML Node representing Rotor Window
+     * 
+     * @private
+     * @uses this.start
+     * 
+     * @returns {HTMLElement}
      */
-    createNode(){
+    /*----------------------------------------------------------*/
+    #createNode(){
         //const node = document.createElement('div');
         return null;
     }
+    /*----------------------------------------------------------*/
     /**
-     * ROTATE
+     * Rotates both Stator and Wiring
+     * 
+     * @uses this.rotateStator()
+     * @uses this.rotateWiring()
+     * 
+     * @returns {void}
      */
+    /*----------------------------------------------------------*/
     rotate(){
         /**
          * Add to position
          */
-        this.position = (this.position + 1) % this.etw.length;
+        this.#stepPosition();
         /**
          * Rotate Stator and Wiring
          */
         this.rotateStator();
         this.rotateWiring();
     }
+    /*----------------------------------------------------------*/
+    /**
+     * Rotates Stator array
+     * @returns {void}
+     * @example
+     */
+    /*----------------------------------------------------------*/
     rotateStator(){
         /**
          * Rotate Stator
@@ -202,6 +359,13 @@ export class TestRotor {
         copy.push(removed);
         this.stator     = copy;
     }
+    /*----------------------------------------------------------*/
+    /**
+     * Rotates Wiring array
+     * @returns {void}
+     * @example
+     */
+    /*----------------------------------------------------------*/
     rotateWiring(){
         const copy      = [...this.wiring];
         const removed   = copy.shift();
@@ -210,7 +374,21 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
-     * FORWARD
+     * Encrypts through the Rotor in the FORWARDS direction:
+     * - Rightmost to leftmost
+     * - ETW -> Stator -> Wiring -> Stator -> ETW
+     * - Rotates for rotor order and (if 0) rotates BEFORE signal encryption
+     * - Checks notch position re: previous rotor (if order 1, 2) and rotates BEFORE encryption
+     * 
+     * @uses this.order
+     * @uses this.rotate()
+     * @uses this.checkNotch()
+     * 
+     * @param {string} signal Character letter
+     * 
+     * @returns {string} Encoded character from rotor
+     * @throws {TypeError}
+     * @throws {RangeError}
      */
     /*----------------------------------------------------------*/
     forward(signal){
@@ -228,6 +406,7 @@ export class TestRotor {
          */
         if(this.order === 0){
             this.rotate();
+            this.debugPosition();
         }
         /**
          * Encrypt:
@@ -261,7 +440,15 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
-     * BACKWARD
+     * Encrypts through the Rotor in the BACKWARDS direction:
+     * - Leftmost to rightmost
+     * - ETW -> Wiring -> Stator -> Wiring -> ETW
+     * 
+     * @param {string} signal Character letter
+     * 
+     * @returns {string} Encoded character from rotor
+     * @throws {TypeError}
+     * @throws {RangeError}
      */
     /*----------------------------------------------------------*/
     backward(signal){
@@ -303,8 +490,10 @@ export class TestRotor {
          */
         return output;
     }
+    /*----------------------------------------------------------*/
     /**
      * SHOW
+     * TODO: Remove after debugging
      */
     show(signal, output, stepped){
         if(DEBUG){
