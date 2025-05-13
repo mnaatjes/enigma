@@ -68,6 +68,11 @@ export class Ringstellung {
      * @type {array}
      */
     rotors=[];
+    /**
+     * Debugging setting
+     * @type {boolean}
+     */
+    debug = false;
     /*----------------------------------------------------------*/
     /**
      * Constructor
@@ -78,7 +83,7 @@ export class Ringstellung {
     constructor(parent, settings={
         "III": "A",
         "II": "A",
-        "I": "A",
+        "I": "Z",
     }){
         /**
          * Validate and init parent
@@ -228,7 +233,6 @@ export class Ringstellung {
             // Not all values instances of Rotor object
             throw new Error('Problem creating Rotors array! Please check Ringstellung settings');
         } else {
-            // Valid and return
             return results;
         }
     }
@@ -254,6 +258,80 @@ export class Ringstellung {
         } else {
             throw new Error('Major rendering error! Check rotor settings and rotors array!');
         }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Forward
+     */
+    /*----------------------------------------------------------*/
+    forward(signal){
+        /**
+         * Reverse order of array:
+         * - Make copy
+         * - Reverse copy
+         * - Signal strikes rotor.order === 2 [index = 0] first!
+         */
+        const rotors = [...this.rotors].reverse();
+        const result = rotors.reduce((acc, rotor, index) => {
+            // Properties
+            const input = (index === 0) ? signal : acc;
+            /**
+             * Determine step:
+             * - By order
+             * - By notch
+             */
+            if(index === 0){
+                rotor.step();
+            }
+            // Perform Forward
+            const output = rotor.forward(input);
+            /**
+             * Debug
+             */
+            if(this.debug){
+                console.warn('Rotor:', rotor.label, 'Position:', rotor.position.index, 'Input:', input, 'Output:', output);
+                //console.warn('Rotor:', rotor.label, 'Input:', input, 'Output:', output);
+            }
+            acc = output;
+            return acc;
+        }, '');
+        /**
+         * Return output from first 3 rotors
+         */
+        return result;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Backward
+     */
+    /*----------------------------------------------------------*/
+    backward(signal){
+        /**
+         * Reverse order of array:
+         * - Make copy
+         * - Reverse copy
+         * - Signal strikes rotor.order === 2 [index = 0] first!
+         */
+        const rotors = this.rotors;
+        const result = rotors.reduce((acc, rotor, index) => {
+            // Properties
+            const input = (index === 0) ? signal : acc;
+            // Perform Backward Calculation
+            const output = rotor.backward(input);
+            /**
+             * Debug
+             */
+            if(this.debug){
+                //console.warn('Rotor:', rotor.label, 'Input:', input, 'Output:', output);
+                console.warn('Rotor:', rotor.label, 'Position:', rotor.position.index, 'Input:', input, 'Output:', output);
+            }
+            acc = output;
+            return acc;
+        }, '');
+        /**
+         * Return output from first 3 rotors
+         */
+        return result;
     }
     /*----------------------------------------------------------*/
 }

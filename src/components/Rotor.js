@@ -142,6 +142,33 @@ export class Rotor {
     }
     /*----------------------------------------------------------*/
     /**
+     * Rotor order index from rightmost [0] to leftmost [2]
+     * @type {int}
+     */
+    /*----------------------------------------------------------*/
+    get order(){
+        /**
+         * Validate parent and node are attached
+         */
+        let index = undefined;
+        if(this.parent.isConnected && this.node.isConnected){
+            Array.from(this.parent.childNodes).forEach((ele, i) => {
+                if(this.node === ele){
+                    index = i;
+                }
+            });
+            // Return index
+            return index;
+        } else {
+            /**
+             * Order cannot be determined
+             */
+            return undefined;
+        }
+    }
+    set order(value){}
+    /*----------------------------------------------------------*/
+    /**
      * Checks notch is ready to engage
      * @uses this.position[char]
      * @uses this.notch
@@ -242,7 +269,7 @@ export class Rotor {
                     index: INDEXES.indexOf(arg.toUpperCase()),
                     char: arg.toUpperCase()
                 };
-            } else if((typeof arg === 'number' && Number.isInteger(arg)) && (arg < 26 && arg > 0)){
+            } else if((typeof arg === 'number' && Number.isInteger(arg)) && (arg < 26 && arg >= 0)){
                 /**
                  * Valid integer within 0 and 26:
                  * - Assign index
@@ -301,11 +328,40 @@ export class Rotor {
     /**
      * forward
      * 
-     * @param {string} incoming
+     * @param {string} signal
      */
     /*----------------------------------------------------------*/
-    forward(incoming){
-
+    forward(signal){
+        /**
+         * Validate signal and parse if necessary
+         */
+        if(typeof signal === 'string'){
+            signal = INDEXES.indexOf(signal.toUpperCase());
+        } else if (typeof signal === 'number' && (signal > 25 && signal < 0)){
+            throw new Error('Invalid Signal!');
+        } else {
+            throw new Error('Invalid Signal');
+        }
+        /**
+         * Define shifted index
+         */
+        const shifted   = (signal + this.position.index) % 26;
+        //const shifted   = Math.abs((signal + this.position.index - 26) % 26);
+        const output    = this.wiring[shifted];
+        return output;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Backward
+     */
+    /*----------------------------------------------------------*/
+    backward(signal){
+        const input     = this.wiring.indexOf(signal);
+        const shifted   = this.wiring[(input - this.position.index) % 26];
+        const output    = this.wiring.indexOf(shifted);
+        //const shifted   = input;
+        //console.log('Input Index:', input, 'Shifted Char:', shifted, 'Output Index:', output);
+        return INDEXES[output];
     }
     /*----------------------------------------------------------*/
     /**
