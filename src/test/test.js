@@ -31,7 +31,7 @@ const rotors = Object.entries(sorted).reduce((acc, curr) => {
     const name      = curr[0];
     const settings  = curr[1];
     // Create Rotor
-    acc[name] = new TestRotor(settings.wiring, settings.notch, name, settings.order);
+    acc[name] = new TestRotor(settings.wiring, settings.notch, name, settings.order, settings.start);
     // Return Acc Object
     return acc;
 }, {});
@@ -55,7 +55,8 @@ function encrypt(signal){
     // Loop order forwards
     let forwards = undefined;
     Object.keys(rotors).forEach(name => {
-        if(name === "I"){
+        console.error("Position:", rotors[name].getCurrent(), rotors[name].getPosition(), "Offset:", rotors[name].getOffset());
+        if(name === "I" && DEBUG){
             console.log('ETW   :', rotors[name].etw.join(""));
             console.log('STATOR:', rotors[name].stator.join(""));
             console.log('WIRING:', rotors[name].wiring.join(""));
@@ -69,7 +70,7 @@ function encrypt(signal){
     // Loop order backwards
     let backwards = undefined;
     [...Object.keys(rotors)].reverse().forEach((name) => {
-        if(name === "I"){
+        if(name === "I" && DEBUG){
             console.log('STATOR:', rotors[name].stator.join(""));
             console.log('WIRING:', rotors[name].wiring.join(""));
         }
@@ -108,27 +109,11 @@ function runEnigma(signal){
 const signal    = "A";
 const encrypted = [];
 encrypted.push(encrypt(signal));
-rotors.I.rotate();
 encrypted.push(encrypt(signal));
-rotors.I.rotate();
 encrypted.push(encrypt(signal));
-rotors.I.rotate();
 encrypted.push(encrypt(signal));
-rotors.I.rotate();
 encrypted.push(encrypt(signal));
-rotors.I.rotate();
 encrypted.push(encrypt(signal));
-rotors.I.rotate();
-encrypted.push(encrypt(signal));
-rotors.I.rotate();
-encrypted.push(encrypt(signal));
-rotors.I.rotate();
-encrypted.push(encrypt(signal));
-rotors.I.rotate();
-encrypted.push(encrypt(signal));
-rotors.I.rotate();
-encrypted.push(encrypt(signal));
-rotors.I.rotate();
 
 /**
  * Compose encryption
@@ -137,4 +122,4 @@ const results = [];
 for(let i = 0; i < encrypted.length; i += 5){
     results.push(encrypted.slice(i, i + 5).join(""));
 }
-console.log(results);
+console.log(results.join(" "));

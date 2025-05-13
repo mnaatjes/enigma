@@ -25,4 +25,4 @@ export const ROTORS = {
         start: "A"
     }
 };
-export const DEBUG = true;
+export const DEBUG = false;
