@@ -500,6 +500,16 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
+     * Ring has arrived at notch
+     * @param {void}
+     * @uses this.notch
+     * 
+     * @returns {boolean}
+     */
+    /*----------------------------------------------------------*/
+    atNotch(){return this.getCurrent() === this.notch;}
+    /*----------------------------------------------------------*/
+    /**
      * SHOW
      * TODO: Remove after debugging
      */

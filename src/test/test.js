@@ -85,6 +85,25 @@ function encrypt(signal){
             console.log('STATOR:', rotors[name].stator.join(""));
             console.log('WIRING:', rotors[name].wiring.join(""));
         }
+        /**
+         * Check for notch:
+         * - Check in order
+         * - Nothing happens for leftmost rotor
+         */
+        if(rotors[name].order === 0 || rotors[name].order === 1){
+            // Check notch
+            if(rotors[name].atNotch() === true){
+                // Get rotor ahead of current
+                const next_name = Object.keys(rotors)[rotors[name].order + 1];
+                rotors[next_name].rotate();
+                console.error(
+                    "NOTCH:", rotors[name].atNotch(), rotors[name].notch
+                );
+            }
+        }
+        /**
+         * Perform Encoding: Forwards
+         */
         forwards = rotors[name].forward(
             (forwards === undefined) ? signal : forwards
         );
@@ -128,7 +147,7 @@ console.log('---------------------------------------');
 // Encryption
 const signal    = "A";
 const encrypted = [];
-for(let i = 0; i < 25; i++){
+for(let i = 0; i < 30; i++){
     encrypted.push(encrypt(signal));
 }
 
