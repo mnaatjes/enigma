@@ -5,7 +5,7 @@
  */
 
 import { ROTORS, UKB_A, UKB_B, DEBUG, ETW } from "./constants.js";
-import { TestRotor } from "./Rotor.js";
+import { TestRotor } from "./components/Rotor.js";
 
 /**
  * HTML Elements

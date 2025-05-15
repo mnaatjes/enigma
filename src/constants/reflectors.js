@@ -9,9 +9,9 @@
 export const reflector_wiring = {
     "beta": "LEYJVCNIXWPBQMDRTAKZGFUHOS".split(""),
     "gamma": "FSOKANUERHMBTIYCWLQPZXVGJD".split(""),
-    "A": "EJMZALYXVBWFCRQUONTSPIKHGD".split(""),
-    "B": "YRUHQSLDPXNGOKMIEBFZCWVJAT".split(""),
-    "C": "FVPJIAOYEDRZXWGCTKUQSBNMHL".split(""),
+    "UKB_A": "EJMZALYXVBWFCRQUONTSPIKHGD".split(""),
+    "UKB_B": "YRUHQSLDPXNGOKMIEBFZCWVJAT".split(""),
+    "UKB_C": "FVPJIAOYEDRZXWGCTKUQSBNMHL".split(""),
     "thinB": "ENKQAUYWJICOPBLMDXZVFTHRGS".split(""),
     "thinC": "RDOBJNTKVEHMLFCWZAXGYIPSUQ".split(""),
     "ETW": "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),

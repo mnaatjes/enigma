@@ -1,15 +1,16 @@
-import { STATOR, DEBUG, ETW, ROTORS } from "./constants.js";
+import { STATOR, DEBUG, ETW, ROTORS, FIXED } from "../constants.js";
 
 /**
  * Rotor Class
  */
-export class TestRotor {
+export class Rotor {
     /**
      * Character representing the initial position of the visible ring
      * - This is the Initial Position
-     * - Visible part of Dial
+     * - Referenced from this.stator
+     * - Causes the stator to rotate until it has reached this character @ stator index
      * @type {string}
-     * @example "Z"
+     * @example start = "Z"
      */
     start;
     /**
@@ -17,14 +18,15 @@ export class TestRotor {
      * @type {string}
      * @example "A"
      */
-    setting;
+    //setting;
     /**
-     * Represents the lead Stator Array character indexed to ETW:
+     * Represents the lead Stator Array CHARACTER indexed to ETW:
      * - Initial is based off start character
      * - Advances with each rotation
-     * - Dynamic
+     * - Dynamic with static index; e.g. "Z" is always 25
+     * - Differs from "head" property which represents the lead character with static index == 0
      * @type {int} 
-     * @example start = "Z" --> position = 25
+     * @example start = "Z": ETW.indexOf("Z") --> position = 25
      */
     position;
     /**
@@ -32,6 +34,7 @@ export class TestRotor {
      * - Fixed to starting point
      * - Set once and doesn't change
      * - Static
+     * - Indexed from ETW
      * @type {int}
      */
     offset;
@@ -84,6 +87,7 @@ export class TestRotor {
          * - Adjusts the internal wiring (gears) relative to the letters that appear
          */
         this.offset     = this.#initOffset();
+        this.notch = this.setNotch(notch);
         /**
          * Initial Position:
          * - Grundstellung: [Rotor] Start Position
@@ -96,6 +100,16 @@ export class TestRotor {
          * HTML | Rendering Properties
          */
         this.node       = this.#createNode();
+        /**
+         * Signal | Output
+         */
+        this.signal = undefined;
+        this.output = undefined;
+        /**
+         * Rotations: Number of rotations of the rotor after initial configuration
+         * @type {int}
+         */
+        this.rotations = 0;
         /**
          * INIT ROTORS
          */
@@ -131,7 +145,6 @@ export class TestRotor {
              * - Rotate stator array until start index is lead letter
              */
             const start_index = this.etw.indexOf(this.start);
-            this.debugPosition();
             /**
              * Rotate Rotor (wiring and stator) to initial position
              */
@@ -145,7 +158,6 @@ export class TestRotor {
             for(let i = 0; i < ring_index; i++){
                 this.rotateETW();
             }
-            this.debugPosition();
         }
     }
     /*----------------------------------------------------------*/
@@ -161,23 +173,68 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
+     * Debug Rotors
+     */
+    /*----------------------------------------------------------*/
+    debugRotors(){
+        if(DEBUG.all || DEBUG.rotors.all){
+            this.debugPosition();
+            this.debugSchema();
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
      * Debug Position
      */
     /*----------------------------------------------------------*/
     debugPosition(){
-        console.log(
-            " HEAD :", this.stator[0], 0,
-            '\n',
-            "RING :", this.ring, this.etw.indexOf(this.ring),
-            '\n',
-            "START:", this.start, this.etw.indexOf(this.start),
-            '\n',
-            "POS  :", this.getCurrent(), this.position,
-            '\n',
-            "OFF  :", this.getOffset()
-        );
-        this.debugRotors();
-        console.log('---------------------------------------------');
+        if(DEBUG.all === true || DEBUG.rotors.positions === true){
+            console.log(
+                " HEAD :", this.stator[0], 0,
+                '\n',
+                "RING :", this.ring, this.etw.indexOf(this.ring),
+                '\n',
+                "START:", this.start, this.etw.indexOf(this.start),
+                '\n',
+                "POS  :", this.getCurrent(), this.position,
+                '\n',
+                "OFF  :", this.getOffset(),
+                '\n',
+                "CURR :", this.getCurrent()
+            );
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Debugging Method: Show Stator and Wiring
+     * 
+     * @remarks Displays this.stator and this.wiring fo rotor in console
+     */
+    /*----------------------------------------------------------*/
+    debugSchema(){
+        if(DEBUG.rotors.all === true && DEBUG.rotors.schema === true){
+            console.error('HERE I AM');
+            console.log(
+                " STATOR", this.stator.join("-"),'\n',
+                "WIRING", this.wiring.join("-"), '\n',
+                "ETW   ", this.etw.join("-")
+            );
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Debug input -> output of each rotor
+     */
+    /*----------------------------------------------------------*/
+    debugIO(){
+        if(DEBUG.all || DEBUG.rotors.all || DEBUG.rotors.IO){
+            console.warn(
+                this.format(this.name),
+                this.signal,
+                "--->",
+                this.output
+            );
+        }
     }
     /*----------------------------------------------------------*/
     /**
@@ -268,27 +325,13 @@ export class TestRotor {
     }
     /*----------------------------------------------------------*/
     /**
-     * Debugging Method: Show Stator and Wiring
-     * 
-     * @remarks Displays this.stator and this.wiring fo rotor in console
-     */
-    /*----------------------------------------------------------*/
-    debugRotors(){
-        console.log(
-            " STATOR", this.stator.join("-"),'\n',
-            "WIRING", this.wiring.join("-"), '\n',
-            "ETW   ", this.etw.join("-")
-        );
-    }
-    /*----------------------------------------------------------*/
-    /**
      * Gets the current character (in the view window):
      * - Based on the Stator Array
      * @returns {string}
      * @example "A"
      */
     /*----------------------------------------------------------*/
-    getCurrent(){return ETW[this.position];}
+    getCurrent(){return FIXED[this.position];}
     /*----------------------------------------------------------*/
     /**
      * Gets the current position (which changes by rotation) of the rotor
@@ -350,6 +393,14 @@ export class TestRotor {
          */
         this.rotateStator();
         this.rotateWiring();
+        /**
+         * Debug Position after rotation
+         */
+        this.debugPosition();
+        /**
+         * Set rotated count
+         */
+        this.rotations++;
     }
     /*----------------------------------------------------------*/
     /**
@@ -409,13 +460,14 @@ export class TestRotor {
             signal = signal.toUpperCase();
         }
         /**
-         * Check for lead (rightmost) order:
-         * - Rotate
+         * @since 2.0 Removed and handled by Ringstellung Class level
          */
+        /*
         if(this.order === 0){
-            this.rotate();
+            //this.rotate();
             this.debugPosition();
         }
+        */
         /**
          * Encrypt:
          * 1) Find static alphabetical index of signal
@@ -433,14 +485,14 @@ export class TestRotor {
          * Check stepped
          */
         const stepped = this.etw[0] !== this.stator[0];
-        if(stepped && DEBUG){
-            const offset = Math.abs(input_index - this.etw.indexOf(input_char));
-            console.warn('INPUT INDEX:', input_index, "INPUT CHAR:", input_char, "OFFSET:", offset);
-        }
         /**
-         * SHOW
+         * Debug IO:
+         * - Define this.signal
+         * - Define this.output
          */
-        this.show(signal, output, stepped);
+        this.signal = signal;
+        this.output = output;
+        this.debugIO();
         /**
          * Return output
          */
@@ -485,18 +537,31 @@ export class TestRotor {
          * Check stepped
          */
         const stepped = this.etw[0] !== this.stator[0];
-        if(stepped && DEBUG){
+        if(stepped && DEBUG.all){
             const offset = Math.abs(input_index - this.etw.indexOf(input_char));
             console.warn('INPUT INDEX:', input_index, "INPUT CHAR:", input_char, "OFFSET:", offset);
         }
         /**
-         * SHOW
+         * Debug IO:
+         * - Define this.signal
+         * - Define this.output
          */
-        this.show(signal, output, stepped);
+        this.signal = signal;
+        this.output = output;
+        this.debugIO();
         /**
          * Return output
          */
         return output;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Set notch
+     */
+    /*----------------------------------------------------------*/
+    setNotch(notch){
+        const notch_index = (FIXED.indexOf(notch) + this.offset) % 26;
+        return FIXED[notch_index];
     }
     /*----------------------------------------------------------*/
     /**
@@ -507,20 +572,8 @@ export class TestRotor {
      * @returns {boolean}
      */
     /*----------------------------------------------------------*/
-    atNotch(){return this.getCurrent() === this.notch;}
-    /*----------------------------------------------------------*/
-    /**
-     * SHOW
-     * TODO: Remove after debugging
-     */
-    show(signal, output, stepped){
-        if(DEBUG){
-            console.log(
-                'ROTOR:', this.format(this.name), 
-                "SIGNAL:", signal, this.etw.indexOf(signal),
-                "OUTPUT", output, this.etw.indexOf(output),
-                "STEP:", stepped
-            );
-        }
+    atNotch(){
+        return this.getCurrent() === this.notch;
     }
+    /*----------------------------------------------------------*/
 }
