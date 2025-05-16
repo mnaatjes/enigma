@@ -179,12 +179,17 @@ export class Rotor {
          */
         const index = get_fixed_index(this.notch);
         const notch = get_fixed_char(((index - n) + 26) % 26);
-        console.log(
-            " Name:    ", this.name, "\n",
-            "Ring:    ", this.settings.ring_setting, "\n",
-            "Position:", this.getHead(), "-->", this.settings.init_position, "\n",
-            "Notch:   ", this.notch, "-->", notch
-        )
+        /**
+         * Debugging
+         */
+        if(DEBUG.setRings){
+            console.log(
+                " Name:    ", this.name, "\n",
+                "Ring:    ", this.settings.ring_setting, "\n",
+                "Position:", this.getHead(), "-->", this.settings.init_position, "\n",
+                "Notch:   ", this.notch, "-->", notch
+            )
+        }
         this.notch = notch;
         
     }
