@@ -89,5 +89,9 @@ export const ROTOR_PROPS = {
  * @type {Object}
  */
 export const DEBUG = {
-    all: false
+    all: false,
+    each: false,
+    status: true,
+    setRings: false,
+    
 };

@@ -13,33 +13,17 @@ import { get_fixed_index } from "./utils/get_fixed_index.js";
 import { validate_char } from "./utils/validate_char.js";
 import { validate_signal } from "./utils/validate_signal.js";
 import { get_fixed_char } from "./utils/get_fixed_character.js";
-import { debug_plugboard } from "./utils/debugging.js";
+import { debug_plugboard, debug_reflector, debug_rotor } from "./utils/debugging.js";
+import { EnigmaMachine } from "./components/Enigma.js";
 /**
  * NOTES:
- * 
- * Message Key: Displayed Rotor Letters; e.g. A, A, A
- * Ring Setting: 
- * 
- * Left: ALTERED ARRAYS
- * Right: FIXED ARRAYS
  */
 
 /**
- * Components
+ * Enigma
  */
-const keyboard  = new Keyboard();
-const plugboard = new Plugboard(DEFAULT_PLUGBOARD_SETTINGS);
-
-/**
- * Rotors
- */
-const I     = new Rotor(ROTOR_PROPS.I.wiring, ROTOR_PROPS.I.notch);
-const II    = new Rotor(ROTOR_PROPS.II.wiring, ROTOR_PROPS.II.notch);
-const III   = new Rotor(ROTOR_PROPS.III.wiring, ROTOR_PROPS.III.notch);
-
-/**
- * Debugging
- */
-console.log(I);
-console.log(II);
-console.log(III);
+const enigma = new EnigmaMachine();
+console.log(enigma);
+//const output = enigma.encrypt(Array(65).fill("A"));
+//const output = enigma.encrypt(Array(4).fill("TESTING").join(""));
+//console.log(output);
