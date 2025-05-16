@@ -80,9 +80,9 @@ export class EnigmaMachine {
      */
     static DEFAULT_CONFIG = {
         ringstellung: {
-            rotors: ["IV", "II", "I"],
-            init_positions: ["C", "A", "T"],
-            ring_settings: ["A", "B", "Z"]
+            rotors: ["III", "II", "I"],
+            init_positions: ["A", "B", "C"],
+            ring_settings: ["A", "Z", "C"]
         },
         reflector: "UKB_B",
         plugboard: {

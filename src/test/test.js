@@ -24,6 +24,6 @@ import { EnigmaMachine } from "./components/Enigma.js";
  */
 const enigma = new EnigmaMachine();
 console.log(enigma);
-//const output = enigma.encrypt(Array(65).fill("A"));
+const output = enigma.encrypt(Array(175).fill("A"));
 //const output = enigma.encrypt(Array(4).fill("TESTING").join(""));
-//console.log(output);
+console.log(output);
