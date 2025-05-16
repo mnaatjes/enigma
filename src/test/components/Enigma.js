@@ -7,11 +7,25 @@ import { validate_signal } from "../utils/validate_signal.js";
 import { DEBUG } from "../constants.js";
 import { get_fixed_index } from "../utils/get_fixed_index.js";
 
+/*----------------------------------------------------------*/
 /**
- * @class
- * @name Enigma
+ * @class EnigmaMachine
+ * @memberof Enigma
  * @version 2.1
+ * @since 1.0   Created
+ * @since 2.0   Reset and Consolidated
+ * @since 2.1   Additions:
+ * - Added validation to message
+ * - Consolidated settings, PROPS constants into EnigmaMachine
+ * - TODO: Migrate DEBUG const to this class
+ * - TODO: Migrate ALPHABET to this class
+ * - TODO: Migrate get_fixed_index and other utils into EnigmaMachine
+ * - TODO: Create currentState method
+ *      - Find points at which to add data
+ *      - Option 1) Implement passing of currentState object into all sub-class instances to maintain state data
+ *      - Option 2) Create a static method that all sub-class instances can utilize to feed data into currentState
  */
+/*----------------------------------------------------------*/
 export class EnigmaMachine {
     /**
      * Rotor Properties
@@ -116,9 +130,23 @@ export class EnigmaMachine {
      * @type {object}
      */
     keyboard;
+    /**
+     * Object containing the current state information of all components
+     * @type {object}
+     * @since 2.1   Created
+     */
+    currentState;
+    /**
+     * Counts the number of encryptions (by character) for each session
+     * @type {int}
+     */
+    count;
     /*----------------------------------------------------------*/
     /**
      * @constructor
+     * 
+     * @param {object} config
+     * @param {} config
      */
     /*----------------------------------------------------------*/
     constructor(config=undefined){
@@ -139,7 +167,22 @@ export class EnigmaMachine {
     }
     /*----------------------------------------------------------*/
     /**
-     * Validate and parse settings
+     * Validate and Parse Configuration Object and returns a settings object
+     * 
+     * @since 2.0   Created:
+     * - Defines wiring and other settings from user input
+     * - Defines every Rotor class parameter needed to create a new Rotor instance
+     * - Assigns wiring to Reflector
+     * 
+     * @since 2.1   Added:
+     * - Migrated all PROPS constants to EnigmaMachine class
+     * - TODO: Validation
+     * - TODO: Break up the parsing of settings so that information from Config can be validated
+     * 
+     * @param {object} config Configuration object
+     * 
+     * @returns {object} Settings object with definitions for all sub-class instances
+     * @throws {Error, TypeError, RangeError}
      */
     /*----------------------------------------------------------*/
     #parseSettings(config){
@@ -148,6 +191,7 @@ export class EnigmaMachine {
          * - Type
          * - Keys
          * - Values
+         * TODO: Break up the parsing of settings so that information from Config can be validated
          */
         /**
          * Return parsed information
@@ -197,17 +241,25 @@ export class EnigmaMachine {
     }
     /*----------------------------------------------------------*/
     /**
-     * Set Ring Settings
+     * Set Ring Settings in each Rotor from the settings fed in from the config object
+     * - Ring rotation occurs in the Rotor Class
+     * 
+     * @param {void}
+     * @returns {void}
      */
     /*----------------------------------------------------------*/
     setInitialRings(){
-        this.rotors.forEach((rotor, i) => {
+        this.rotors.forEach((rotor) => {
             rotor.setRing(get_fixed_index(rotor.settings.ring_setting));
         });
     }
     /*----------------------------------------------------------*/
     /**
-     * Set Initial Position
+     * Set Initial Position in each Rotor from the settings fed in from the config object
+     * - Ring rotation occurs in the Rotor Class
+     * 
+     * @param {void}
+     * @returns {void}
      */
     /*----------------------------------------------------------*/
     setInitialPositions(){
@@ -217,18 +269,45 @@ export class EnigmaMachine {
     }
     /*----------------------------------------------------------*/
     /**
-     * Encrypt
+     * Encrypt:
+     * - Primary input -> output of the Enigma Class
      * 
-     * @param {string} message
+     * @since 2.1
+     * - Accepts strings only!
+     * - Validation added
+     * - Parsing
+     * 
+     * @since 2.2
+     * - Monitoring (state, input, output) added for reference
+     * 
+     * @uses Reflector
+     * @uses Rotor
+     * @uses Plugboard
+     * @uses Keyboard
+     * 
+     * @param {string|array} message
      */
     /*----------------------------------------------------------*/
     encrypt(message){
         /**
-         * Validate message
+         * Validate message:
+         * - Check type
+         * - Replace non-alphabetic characters with whitespace
+         * - Trim
+         * - Cast to array
          */
-        message = (typeof message === 'string') ? message.split("") : message;
+        if(typeof message !== 'string'){
+            throw new TypeError(`The message supplied into EnigmaMachine.encrypt() MUST be a string! "${typeof message}" given`);
+        }
+        // Replace non-alphabetic characters
+        message = message.replace(/[^a-zA-Z]/g, "");
+        // Trim
+        message = message.replace(/\sg/, "");
+        // Cast to array
+        message = message.split("");
         /**
-         * Declare Props
+         * Output container array that collects each output character
+         * @type {array}
          */
         const output = [];
         /**
@@ -262,7 +341,10 @@ export class EnigmaMachine {
             output.push(signal);
         });
         /**
-         * Return output
+         * Return output:
+         * - Group into 5 character segments
+         * - Cast into string
+         * - Space every 5 characters
          */
         return output.reduce((acc, _, i, arr) => {
             // Reduce
@@ -281,21 +363,16 @@ export class EnigmaMachine {
     /*----------------------------------------------------------*/
     stepRotors(){
         /**
-         * Conditional Rotation (by order of importance):
-         * - All 3 rotate
-         * - 
-         * - Rightmost Rotates
-         */
-        /**
-         * NOTES
-         * 
-         * R1 === I     --> [2]
-         * R2 === II    --> [1]
-         * R3 === III   --> [0]
+         * Checks all rotors for their notch-state (if the head character is at its notch character)
+         * @type {array}
          */
         const atNotch = this.rotors.map(rotor => rotor.getHead() === rotor.notch);
         /**
-         * Check Rightmost and Middle
+         * Determine Conditions for Rotation:
+         * - Check Rightmost and Middle notch
+         * - Double-step Anomaly
+         * - Rightmost notch
+         * - Step Rightmost every keypress
          */
         if(atNotch[0] && atNotch[1]){
             // Rotate all 3
@@ -320,6 +397,9 @@ export class EnigmaMachine {
             // Rotate Rightmost
             this.rotors[0].rotate();
         }
+        /**
+         * Collect properties for debugging
+         */
         const names     = this.rotors.map(rotor => rotor.name);
         const positions = this.rotors.map(rotor => rotor.getHead());
         const notches   = this.rotors.map(rotor => rotor.notch);
@@ -420,6 +500,23 @@ export class EnigmaMachine {
          * Return Signal
          */
         return signal;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Debugging methods all consolidated in one method within EnigmaMachine
+     * 
+     * @since 2.1   Created:
+     * - Moved all disparate methods and definitions for debugging here
+     * - Declared monitoring property of EnigmaClass for better state observance
+     * 
+     * @uses this.currentState
+     * 
+     * @param {void}
+     * @returns {void}
+     */
+    /*----------------------------------------------------------*/
+    debug(){
+
     }
     /*----------------------------------------------------------*/
 }

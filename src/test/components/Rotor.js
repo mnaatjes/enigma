@@ -2,7 +2,7 @@
  * @memberof Enigma
  */
 
-import { ALPHABET, DEBUG, ROTOR_PROPS } from "../constants.js";
+import { ALPHABET, DEBUG } from "../constants.js";
 import { get_fixed_char } from "../utils/get_fixed_character.js";
 import { get_fixed_index } from "../utils/get_fixed_index.js";
 import { validate_char } from "../utils/validate_char.js";
