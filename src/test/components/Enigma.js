@@ -82,7 +82,7 @@ export class EnigmaMachine {
         ringstellung: {
             rotors: ["III", "II", "I"],
             init_positions: ["A", "B", "C"],
-            ring_settings: ["A", "Z", "C"]
+            ring_settings: ["Z", "Z", "Z"]
         },
         reflector: "UKB_B",
         plugboard: {
