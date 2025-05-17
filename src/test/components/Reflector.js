@@ -17,6 +17,7 @@ import { EnigmaMachine } from "./Enigma.js";
  * - Added validation
  * - Still references ALPHABET from constants.js
  * - Wiring set in EnigmaMachine and fed in as settings
+ * - Added log method and property
  */
 /*----------------------------------------------------------*/
 export class Reflector {
@@ -30,6 +31,11 @@ export class Reflector {
      * @type {array}
      */
     wiring = [];
+    /**
+     * Log of plugboard
+     * @type {Log}
+     */
+    log = {};
     /*----------------------------------------------------------*/
     /**
      * @construct
@@ -101,8 +107,30 @@ export class Reflector {
         const input_char    = get_fixed_char(signal);
         const output_signal = this.wiring.indexOf(input_char);
         /**
+         * Log
+         */
+        this.#log(signal, output_signal);
+        /**
          * Validate
          */
         return output_signal;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Log transaction
+     * @uses this.log
+     * 
+     * @param {int} input
+     * @param {int} output
+     */
+    /*----------------------------------------------------------*/
+    #log(input, output){
+        /**
+         * Log Properties
+         */
+        this.log = {
+            input: {signal: input, char: EnigmaMachine.getFixedChar(input)},
+            output: {signal: output, char: EnigmaMachine.getFixedChar(output)},
+        };
     }
 }

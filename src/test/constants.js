@@ -25,5 +25,6 @@ export const DEBUG = {
     each: false,
     status: false,
     setRings: false,
-    
+    logs: false,
+    state: false
 };

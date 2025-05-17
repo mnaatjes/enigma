@@ -1,7 +1,7 @@
 /**
  * @memberof Enigma
  */
-
+import { EnigmaMachine } from "./Enigma.js";
 import { ALPHABET, DEBUG } from "../constants.js";
 import { get_fixed_char } from "../utils/get_fixed_character.js";
 import { get_fixed_index } from "../utils/get_fixed_index.js";
@@ -24,6 +24,24 @@ export class Rotor {
      * @type {array}
      */
     wiring = [];
+    /**
+     * Order of Rotor within Enigma machine
+     * - 0 indexed
+     * - From Left[0] to Right[2]
+     * @type {int}
+     */
+    order;
+    /**
+     * Previous head character of rotor:
+     * - Used for determining if rotor has stepped
+     * @type {string}
+     */
+    prevHead;
+    /**
+     * Log of plugboard
+     * @type {Log}
+     */
+    log = {};
     /*----------------------------------------------------------*/
     /**
      * 
@@ -36,6 +54,7 @@ export class Rotor {
         this.wiring     = this.settings.wiring;
         this.notch      = this.settings.notch;
         this.order      = this.settings.order;
+        this.prevHead   = this.getHead();
     }
     /*----------------------------------------------------------*/
     /**
@@ -54,6 +73,10 @@ export class Rotor {
          */
         const input_char    = this.wiring[signal];
         const output_signal = this.fixed.indexOf(input_char);
+        /**
+         * Log
+         */
+        this.#log(signal, output_signal);
         /**
          * Validate and return
          */
@@ -76,6 +99,10 @@ export class Rotor {
          */
         const input_char    = this.fixed[signal];
         const output_signal = this.wiring.indexOf(input_char);
+        /**
+         * Log
+         */
+        this.#log(signal, output_signal, false);
         /**
          * Validate and return
          */
@@ -114,11 +141,25 @@ export class Rotor {
          */
         if(forward === true){
             for(let i = 0; i < n; i++){
+                /**
+                 * Save previous head position
+                 */
+                this.prevHead = this.getHead();
+                /**
+                 * Rotate Fixed Array
+                 */
                 const shifted = copy_fixed.shift();
                 copy_fixed.push(shifted);
             }
         } else if(forward === false){
             for(let i = 25; i >= n; i--){
+                /**
+                 * Save previous head position
+                 */
+                //this.prevHead = this.getHead();
+                /**
+                 * Rotate Fixed Array
+                 */
                 const shifted = copy_fixed.shift();
                 copy_fixed.push(shifted);
             }
@@ -224,4 +265,57 @@ export class Rotor {
     /*----------------------------------------------------------*/
     getHead(){return this.fixed[0];}
     /*----------------------------------------------------------*/
+    /**
+     * Checks if the rotor has rotated since last keypress
+     * 
+     * @uses this.getHead()
+     * @uses this.prevHead
+     * @param {void}
+     * 
+     * @returns {boolean}
+     */
+    /*----------------------------------------------------------*/
+    hasStepped(){return this.getHead() !== this.prevHead;}
+    /*----------------------------------------------------------*/
+    /**
+     * Log transaction
+     * @uses this.log
+     * 
+     * @param {int} input
+     * @param {int} output
+     */
+    /*----------------------------------------------------------*/
+    #log(input, output, forward=true){
+        /**
+         * Determine direction
+         */
+        if(forward === true){
+            /**
+             * Forward Data
+             */
+            this.log = {
+                forward: {
+                    input: {signal: input, char: EnigmaMachine.getFixedChar(input)},
+                    output: {signal: output, char: EnigmaMachine.getFixedChar(output)}
+                },
+                /*
+                backward: {},
+                position: this.getHead(),
+                ring: this.settings.ring_setting,
+                notch: this.notch,
+                atNotch: this.getHead() === this.notch,
+                wiring: this.wiring.join(""),
+                fixed: this.fixed.join("")
+                */
+            };
+        } else {
+            /**
+             * Backward Data
+             */
+            this.log.backward = {
+                input: {signal: input, char: EnigmaMachine.getFixedChar(input)},
+                output: {signal: output, char: EnigmaMachine.getFixedChar(output)}
+            };
+        }
+    }
 }

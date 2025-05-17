@@ -24,9 +24,15 @@ import { get_fixed_index } from "../utils/get_fixed_index.js";
  *      - Find points at which to add data
  *      - Option 1) Implement passing of currentState object into all sub-class instances to maintain state data
  *      - Option 2) Create a static method that all sub-class instances can utilize to feed data into currentState
+ *  - Added static methods for get_fixed_char and get_fixed_signal
  */
 /*----------------------------------------------------------*/
 export class EnigmaMachine {
+    /**
+     * Fixed Alphabet for indexing
+     * @type {array}
+     */
+    static ALPHABET  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     /**
      * Rotor Properties
      * @type {object}
@@ -132,21 +138,38 @@ export class EnigmaMachine {
     keyboard;
     /**
      * Object containing the current state information of all components
-     * @type {object}
+     * @type {EnigmaState}
+     * 
      * @since 2.1   Created
      */
-    currentState;
+    state = {
+        count: 0,
+        input: {},
+        output: {},
+        config: {},
+        path: {},
+        stepped: [],
+    };
+    /**
+     * Logs of messages encrypted
+     * @type {EnigmaLog}
+     */
+    logs = [];
     /**
      * Counts the number of encryptions (by character) for each session
      * @type {int}
      */
-    count;
+    count = 0;
+    /**
+     * Session number; number of encryptions (by message)
+     * @type {int}
+     */
+    sessions = 0;
     /*----------------------------------------------------------*/
     /**
      * @constructor
      * 
-     * @param {object} config
-     * @param {} config
+     * @param {object|undefined} config
      */
     /*----------------------------------------------------------*/
     constructor(config=undefined){
@@ -236,8 +259,20 @@ export class EnigmaMachine {
              * Plugboard
              * @property {object<[Character]: string>}
              */
-            plugboard: config.plugboard
+            plugboard: {
+                connections: config.plugboard
+            }
         };
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Update Configuration
+     * 
+     * @param {object} settings
+     */
+    /*----------------------------------------------------------*/
+    updateConfig(settings){
+
     }
     /*----------------------------------------------------------*/
     /**
@@ -313,11 +348,11 @@ export class EnigmaMachine {
         /**
          * Loop characters
          */
-        message.forEach(letter => {
+        message.forEach((letter, count) => {
             /**
              * Increment Counter
              */
-            this.count++;
+            this.count = count;
             /**
              * Declare Props
              */
@@ -339,7 +374,17 @@ export class EnigmaMachine {
              * Append to output
              */
             output.push(signal);
+            /**
+             * Save State
+             */
+            this.#saveState(letter, signal, count);
         });
+        /**
+         * Logs:
+         * - Increment session
+         */
+        this.#incrementSession();
+        //this.#logMessages(message, output);
         /**
          * Return output:
          * - Group into 5 character segments
@@ -516,7 +561,208 @@ export class EnigmaMachine {
      */
     /*----------------------------------------------------------*/
     debug(){
-
+        /**
+         * Display state
+         */
+        if(DEBUG.state){
+            Object.entries(this.state).map(([prop, val]) => {
+                // Format Property
+                const property = prop.toUpperCase() + ':';
+                // Check if object
+                console.log(property, val);
+            });
+        }
+        /**
+         * Display logs
+         */
+        if(DEBUG.logs){
+            console.log(this.logs);
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Get Enigma State
+     * 
+     * @uses this.state
+     */
+    /*----------------------------------------------------------*/
+    #saveState(input_char, output_char, count){
+        /**
+         * Save Data
+         */
+        this.state = {
+            count,
+            input: {
+                char: input_char, 
+                signal: EnigmaMachine.getFixedSignal(input_char)
+            },
+            output: {
+                char: output_char, 
+                signal: EnigmaMachine.getFixedSignal(output_char)
+            },
+            config: {
+                plugboard: {
+                    fixed: this.plugboard.right.join(""),
+                    wiring: this.plugboard.left.join(""),
+                    connections: this.plugboard.connections
+                },
+                rotors: this.rotors.map((rotor) => {
+                    return {
+                        name: rotor.name,
+                        position: rotor.getHead(),
+                        ring_setting: rotor.settings.ring_setting,
+                        notch: rotor.notch,
+                        atNotch: rotor.getHead() === rotor.notch,
+                        fixed: rotor.fixed.join(""),
+                        wiring: rotor.wiring.join(""),
+                        order: rotor.order
+                    };
+                }),
+                reflector: {
+                    name: this.reflector.name,
+                    fixed: this.reflector.fixed.join(""),
+                    wiring: this.reflector.wiring.join("")
+                }
+            },
+            path: {
+                forwards: {
+                    plugboard: this.plugboard.log.forward,
+                    rotors: this.rotors.map((rotor) => {
+                        return rotor.log.forward.input;
+                    })
+                },
+                reflector: this.reflector.log,
+                backwards: {
+                    rotors: this.rotors.map((rotor) => {
+                        return rotor.log.backward.input;
+                    }),
+                    plugboard: this.plugboard.log.backward
+                }
+            },
+            stepped: this.rotors.map(rotor => rotor.hasStepped()),
+        };
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Renders HTML for the current EnigmaMachine state
+     * 
+     * @returns {HTMLElement}
+     */
+    /*----------------------------------------------------------*/
+    renderState(){
+        
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Utility Method for pushing message input to this.logs
+     * 
+     * @private
+     * @uses this.logs
+     * 
+     * @param {string} input Message stream
+     * @param {string} output Output stream
+     * 
+     * @returns {void}
+     */
+    /*----------------------------------------------------------*/
+    #logMessages(input, output){
+        /**
+         * Cast values
+         */
+        input  = Array.isArray(input) ? input.join("") : input;
+        output = Array.isArray(output) ? output.join("") : output;
+        /**
+         * Push to logs
+         */
+        this.logs.push({
+            input,
+            output,
+            length: input.length,
+            session: this.state.sessions,
+            config: {
+            }
+        });
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Utility Method for 
+     * 
+     * @static
+     * @private
+     * @uses this.state
+     * 
+     * @param {}
+     * 
+     * @returns {void}
+     */
+    /*----------------------------------------------------------*/
+    #incrementSession(){this.sessions++;}
+    /*----------------------------------------------------------*/
+    /**
+     * Get Fixed Character from Signal
+     * 
+     * @function get_fixed_char
+     * 
+     * @param {int} signal
+     * @uses ALPHABET
+     * 
+     * @returns {string} Character from ALPHABET
+     * @throws {Error}
+     */
+    /*----------------------------------------------------------*/
+    static getFixedChar(signal){
+        /**
+         * Validate
+         */
+        if(!validate_signal(signal)){
+            throw new Error(`Signal "${signal}" is invalid!`);
+        }
+        /**
+         * Cast as int if string
+         */
+        if(typeof signal === 'string'){
+            signal = parseInt(signal);
+        }
+        /**
+         * Convert
+         */
+        const char = EnigmaMachine.ALPHABET[signal];
+        /**
+         * Validate and return
+         */
+        if(validate_char(char)){
+            return char;
+        } else {
+            throw new Error(`Could not resolve signal "${signal}" to character "${char}"!`);
+        }
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Get Fixed Signal from Character
+     * 
+     * @param {string} char
+     * @uses EnigmaMachine.ALPHABET
+     * 
+     * @returns {int} Index integer tied to the letter from the fixed ALPHABET
+     * @throws {Error, RangeError}
+     */
+    /*----------------------------------------------------------*/
+    static getFixedSignal(char){
+        /**
+         * Validate
+         */
+        if(!validate_char(char)){
+            throw new Error(`Character supplied "${char}" is invalid!`);
+        }
+        /**
+         * Validate Index and return
+         */
+        const index = EnigmaMachine.ALPHABET.indexOf(char.toUpperCase());
+        if(validate_signal(index)){
+            return index;
+        } else {
+            throw new RangeError(`Could not resolve character "${char}" to index "${index}"`);
+        }
     }
     /*----------------------------------------------------------*/
 }

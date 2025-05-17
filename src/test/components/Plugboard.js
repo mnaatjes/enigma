@@ -7,22 +7,46 @@ import { get_fixed_char } from "../utils/get_fixed_character.js";
 import { get_fixed_index } from "../utils/get_fixed_index.js";
 import { validate_char } from "../utils/validate_char.js";
 import { validate_signal } from "../utils/validate_signal.js";
-
+import { EnigmaMachine } from "./Enigma.js";
+/*----------------------------------------------------------*/
+/**
+ * @class Plugboard
+ * 
+ * @version 1.2     
+ * @since 1.0   Created
+ * @since 1.1   Restarted
+ * @since 1.2   Updates:
+ * - Changed #initPlugboard to public method update()
+ * - Moved ALPHABET reference from constants.js to EnigmaMachine static
+ * - Added log and log() method to collect configuration and input/output
+ */
+/*----------------------------------------------------------*/
 export class Plugboard {
     /**
      * Left: Contains swapped letters
      * @type {array}
      */
-    left = ALPHABET;
+    left = EnigmaMachine.ALPHABET;
     /**
      * Right: Duplicate of Fixed ALPHABET
      * @type {array}
      */
-    right = ALPHABET;
+    right = EnigmaMachine.ALPHABET;
     /**
-     * 
+     * Settings to update plugboard configuration
+     * @type {object}
      */
     settings;
+    /**
+     * Plugboard Connections
+     * @type {object}
+     */
+    connections;
+    /**
+     * Log of plugboard
+     * @type {Log}
+     */
+    log = {};
     /*----------------------------------------------------------*/
     /**
      * 
@@ -32,10 +56,12 @@ export class Plugboard {
     constructor(settings){
         // Validate Settings
         this.settings = this.#validateSettings(settings);
+        // Update connections
+        this.connections = this.settings.connections;
         /**
-         * Set left (altered) array
+         * Update Plugboard
          */
-        this.left = this.#initPlugboard();
+        this.left = this.update(this.settings.connections);
     }
     /*----------------------------------------------------------*/
     /**
@@ -47,10 +73,10 @@ export class Plugboard {
     /**
      * Initialize Plugboard
      * 
-     * @uses this.settings
+     * @param {object} settings
      */
     /*----------------------------------------------------------*/
-    #initPlugboard(){
+    update(settings){
         /**
          * Duplicate initial left array
          */
@@ -58,7 +84,7 @@ export class Plugboard {
         /**
          * Loop settings
          */
-        Object.entries(this.settings).forEach(([input, output]) => {
+        Object.entries(settings).forEach(([input, output]) => {
             /**
              * Get Indexes
              */
@@ -73,7 +99,7 @@ export class Plugboard {
         /**
          * Validate lengths and return
          */
-        if(copy_left.length === ALPHABET.length){
+        if(copy_left.length === EnigmaMachine.ALPHABET.length){
             return copy_left;
         } else {
             throw new Error('Unable to transform left array in Plugboard.initPlugboard()!');
@@ -104,6 +130,13 @@ export class Plugboard {
         if(!validate_signal(output_signal)){
             throw new Error(`Unable to parse output "${output_signal}" in Plugboard.forward()!`);
         } else {
+            /**
+             * Log
+             */
+            this.#log(input_signal, output_signal);
+            /**
+             * Return output
+             */
             return output_signal;
         }
     }
@@ -130,7 +163,51 @@ export class Plugboard {
         if(!validate_signal(output_signal)){
             throw new Error(`Unable to parse output "${output_signal}" in Plugboard.forward()!`);
         } else {
+            /**
+             * Log
+             */
+            this.#log(input_signal, output_signal, false);
+            /**
+             * Return output
+             */
             return output_signal;
         }
     }
+    /*----------------------------------------------------------*/
+    /**
+     * Log transaction
+     * @uses this.log
+     * 
+     * @param {int} input
+     * @param {int} output
+     */
+    /*----------------------------------------------------------*/
+    #log(input, output, forward=true){
+        /**
+         * Determine direction
+         */
+        if(forward === true){
+            /**
+             * Forward Data
+             */
+            this.log = {
+                forward: {
+                    input: {signal: input, char: EnigmaMachine.getFixedChar(input)},
+                    output: {signal: output, char: EnigmaMachine.getFixedChar(output)}
+                },
+                backward: {},
+                wiring: this.left.join(""),
+                fixed: this.right.join("")
+            };
+        } else {
+            /**
+             * Backward Data
+             */
+            this.log.backward = {
+                input: {signal: input, char: EnigmaMachine.getFixedChar(input)},
+                output: {signal: output, char: EnigmaMachine.getFixedChar(output)}
+            };
+        }
+    }
+    /*----------------------------------------------------------*/
 }
