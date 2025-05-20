@@ -6,6 +6,8 @@ import { validate_char } from "../utils/validate_char.js";
 import { validate_signal } from "../utils/validate_signal.js";
 import { DEBUG } from "../constants.js";
 import { get_fixed_index } from "../utils/get_fixed_index.js";
+import { create_element } from "../utils/create_element.js";
+import { EnigmaElement } from "../custom_elements/EnigmaElement.js";
 
 /*----------------------------------------------------------*/
 /**
@@ -172,7 +174,7 @@ export class EnigmaMachine {
      * @param {object|undefined} config
      */
     /*----------------------------------------------------------*/
-    constructor(config=undefined){
+    constructor(parent, config=undefined){
         // Init Settings
         this.settings = this.#parseSettings((config === undefined) ? EnigmaMachine.DEFAULT_CONFIG : config);
         // Init Keyboard
@@ -187,6 +189,7 @@ export class EnigmaMachine {
         this.reflector = new Reflector(this.settings.reflector);
         // Start Counter
         this.count = 0;
+        this.element = document.createElement('enigma-machine');
     }
     /*----------------------------------------------------------*/
     /**
@@ -628,13 +631,13 @@ export class EnigmaMachine {
                 forwards: {
                     plugboard: this.plugboard.log.forward,
                     rotors: this.rotors.map((rotor) => {
-                        return rotor.log.forward.input;
+                        return rotor.log.forward;
                     })
                 },
                 reflector: this.reflector.log,
                 backwards: {
                     rotors: this.rotors.map((rotor) => {
-                        return rotor.log.backward.input;
+                        return rotor.log.backward;
                     }),
                     plugboard: this.plugboard.log.backward
                 }
@@ -644,44 +647,85 @@ export class EnigmaMachine {
     }
     /*----------------------------------------------------------*/
     /**
-     * Renders HTML for the current EnigmaMachine state
+     * Rendering Method: Renders HTML for the current EnigmaMachine state
+     * 
+     * TODO: Migrate to Custom Element
      * 
      * @returns {HTMLElement}
      */
     /*----------------------------------------------------------*/
     renderState(){
-        
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Utility Method for pushing message input to this.logs
-     * 
-     * @private
-     * @uses this.logs
-     * 
-     * @param {string} input Message stream
-     * @param {string} output Output stream
-     * 
-     * @returns {void}
-     */
-    /*----------------------------------------------------------*/
-    #logMessages(input, output){
         /**
-         * Cast values
+         * Reference to this.state.path
+         * @type {object}
          */
-        input  = Array.isArray(input) ? input.join("") : input;
-        output = Array.isArray(output) ? output.join("") : output;
+        const path = this.state.path;
         /**
-         * Push to logs
+         * Configuration Data Object
+         * @type {object}
          */
-        this.logs.push({
-            input,
-            output,
-            length: input.length,
-            session: this.state.sessions,
-            config: {
-            }
-        });
+        const config_data = {
+            rotors: this.state.config.rotors.map(obj => obj.name).join(", "),
+            positions: this.state.config.rotors.map(obj => obj.position).join(", "),
+            ring_setting: this.state.config.rotors.map(obj => obj.ring_setting).join(", "),
+        }
+        /**
+         * Path Data object
+         */
+        const path_headers = [
+            'IN',
+            'PB',
+            ...this.state.config.rotors.map(obj => obj.name),
+            this.state.config.reflector.name,
+            ...[...this.state.config.rotors].reverse().map(obj => obj.name),
+            'PB',
+            'OUT'
+        ];
+        const path_data = [
+            this.state.input.char,
+            path.forwards.plugboard.output.char,
+            ...path.forwards.rotors.map(obj => obj.output.char),
+            path.reflector.output.char,
+            ...path.backwards.rotors.map(obj => obj.output.char),
+            path.backwards.plugboard.output.char,
+            this.state.output.char
+        ];
+        const headers = ['Rotors', 'Positions', 'Ring Settings', 'Path'];
+        /**
+         * Create Styling elements
+         */
+        const container = create_element('table', {classList: ["--ticker"]}, [
+            /**
+             * Headers
+             */
+            create_element('thead', {}, [create_element('tr', {}, 
+                headers.map(title => create_element('th', {textContent: title}))
+            )]),
+            /**
+             * Data Cells
+             */
+            create_element('tbody', {}, [create_element('tr', {}, [
+                    ...Object.values(config_data).map(title => create_element('td', {textContent: title})),
+                    create_element('td', {classList: ["--path"]}, [
+                        /**
+                         * Path Table
+                         */
+                        create_element('table', {}, [
+                            create_element('tr', {}, 
+                                path_headers.map(title => create_element('th', {textContent: title.toUpperCase()}))
+                            ),
+                            create_element('tr', {}, 
+                                path_data.map(data => create_element('td', {textContent: data}))
+                            ),
+                        ])
+                    ])
+                ]
+            )])
+        ]);
+        /**
+         * Return main table node
+         */
+        return container;
     }
     /*----------------------------------------------------------*/
     /**
@@ -765,4 +809,10 @@ export class EnigmaMachine {
         }
     }
     /*----------------------------------------------------------*/
+    /*----------------------------------------------------------*/
+    /**
+     * Define Element
+     */
+    /*----------------------------------------------------------*/
+
 }

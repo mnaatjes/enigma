@@ -19,12 +19,13 @@
     /**
     *   Border
     */
-    border: 1px solid var(--color-border);
+    border: 1px solid transparent;
     border-radius: var(--radius);
+    background-color: rgba(0, 0, 0, 0.1);
     /**
     *   Shadow
     */
-    
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
 }
 /*----------------------------------------------------------*/
 /**
@@ -99,7 +100,7 @@ button.keyboard--key.--input {
     /**
     *   Border
     */
-    border-color: var(--color-border);
+    border-color: #252525;
     /**
     *   Display
     */
@@ -234,4 +235,17 @@ div.keyboard--key.--output[data-enabled="true"]::after {
     *   Shadow
     */
     box-shadow: 0px 0px var(--bulb-size) var(--bulb-size) rgba(255, 255, 255, 0.5);
+}
+/*----------------------------------------------------------*/
+/**
+*   ANIMATIONS: LAMPBOARD
+*/
+/*----------------------------------------------------------*/
+.animate--lamp {
+    animation: lamp 0.5s ease-in-out forwards;
+}
+@keyframes lamp {
+    0% {background-color: red;}
+    50% {background-color: white;}
+    100% {background-color: red;}
 }

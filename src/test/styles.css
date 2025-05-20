@@ -2,6 +2,7 @@
 *   ENIGMA TEST STYLES
 */
 @import url(../styles/debug.css);
+@import url(../styles/keyboard.css);
 /**
 *   VARIABLES
 */
@@ -46,17 +47,38 @@ header, main, section {
     padding: 0.5rem 0.5rem;
     margin: 0.5rem 0.5rem;
 }
+/*----------------------------------------------------------*/
 /**
-*   MAIN
+* MAIN
 */
+/*----------------------------------------------------------*/
+main {
+ /**
+  * Display
+  */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /**
+  * Position
+  */
+  padding: 1rem;
+}
+/*----------------------------------------------------------*/
 /**
-*   CONTAINER
+* SECTION
 */
-.container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+/*----------------------------------------------------------*/
+section {
+  /**
+  * Display
+  */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 /**
 *  COLUMN

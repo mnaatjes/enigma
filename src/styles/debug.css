@@ -1,76 +1,92 @@
-table {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
-    background-color: transparent;
-    border-collapse: separate; /* Important: Use 'separate' */
-    border-spacing: 0; /* Remove spacing between cells */
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-  }
-  
-  th,
-  td {
-    padding: 0.75rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-  }
-  
-  thead th {
-    vertical-align: bottom;
-    border-bottom: 2px solid #dee2e6;
-  }
-  
-  /* Apply rounded corners to the first and last cells of the first and last rows */
-  thead tr:first-child th:first-child,
-  tbody tr:first-child td:first-child {
-    border-top-left-radius: 0.25rem;
-  }
-  
-  thead tr:first-child th:last-child,
-  tbody tr:first-child td:last-child {
-    border-top-right-radius: 0.25rem;
-  }
-  
-  tfoot tr:last-child td:first-child,
-  tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 0.25rem;
-  }
-  
-  tfoot tr:last-child td:last-child,
-  tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 0.25rem;
-  }
-  
-  tbody + tbody {
-    border-top: 2px solid #dee2e6;
-  }
-  
-  tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-  
-  tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.075);
-  }
-  
-  table.bordered {
-    /* The outer border is already applied to the base table style */
-  }
-  
-  table.bordered th,
-  table.bordered td {
-    border: 1px solid #dee2e6;
-  }
-  
-  table.sm th,
-  table.sm td {
-    padding: 0.3rem;
-  }
-  
-  .responsive-table-container {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+/**
+*   CONTAINER
+*/
+main.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+/**
+*   DEBUG CONTAINER
+*/
+section[id^="debug_"] {
+  /**
+  * Display
+  */
+}
+
+/**
+*   DEBUG TICKER TABLE
+*/
+table.--ticker {
+  min-width: 675px;
+  margin: 1rem 0;
+  /*BORDER*/
+  border: 1px solid #c2c2c2;
+  border-radius: 2px;
+  /*BKRND*/
+  background-color: rgba(245, 240, 225, 0.8);
+  /*FONT*/
+  font-family: monospace;
+  text-align: center;
+  vertical-align: center;
+  /*SHADOW*/
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.35);
+}
+/**
+* TH, TD
+*/
+table.--ticker thead tr th,
+table.--ticker tbody tr td {
+  /*POSITION*/
+  padding: 0.75rem;
+  /*FONT*/
+  font-family: monospace;
+  color: #474747;
+  font-size: 0.75rem;
+
+}
+table.--ticker thead tr th {
+  /*BORDER*/
+  border-bottom: 1px dashed #adadad;
+}
+table.--ticker tbody tr td:not(:last-of-type),
+table.--ticker thead tr th:not(:last-of-type) {
+  /*BORDER*/
+  border-right: 1px dashed #adadad; 
+}
+table.--ticker thead tr th:hover,
+table.--ticker tbody tr td:hover {
+  /*USER*/
+  user-select: none;
+  /*BKRND*/
+
+  /*FONT*/
+}
+/**
+*   PATH CELL
+*/
+table.--ticker tbody tr td.--path table {
+  /*BORDER*/
+  border-collapse: collapse;
+}
+table.--ticker tbody tr td.--path table tr th {
+    border-bottom: 1px dashed rgba(255, 0, 0, 0.4);
+}
+table.--ticker tbody tr td.--path table tr th,
+table.--ticker tbody tr td.--path table tr td {
+  /*POSITION*/
+  position: relative;
+  padding: 0.25rem;
+  min-width: 1.25rem;
+  /*BORDER*/
+  border-right: 1px dashed rgba(255, 0, 0, 0.4);
+  /*FONT*/
+  font-family: monospace;
+  color: #474747;
+}
+table.--ticker tbody tr td.--path table tr th:last-of-type,
+table.--ticker tbody tr td.--path table tr td:last-of-type {
+  border-right: 1px solid transparent;
+}

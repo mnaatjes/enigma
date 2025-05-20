@@ -9,17 +9,14 @@ import { json_to_table } from "./utils/json_to_table.js";
 /**
  * HTML Elements:
  */
-const debug_container = document.getElementById('debug_state');
+const containers = {
+    keyboard: document.getElementById('keyboard'),
+    lampboard: document.getElementById('lampboard'),
+    debug: document.getElementById('debug_state'),
+};
 
 /**
  * Enigma
  */
-const enigma = new EnigmaMachine();
-//const output = enigma.encrypt(Array(175).fill("A").join(""));
-const output = enigma.encrypt(Array(5).fill("A").join(""));
-//const outputB = enigma.encrypt("In the file where your class is defined, import the type definitions from t");
-console.log(output);
-enigma.debug();
-console.log(enigma.state);
-debug_container.appendChild(json_to_table(enigma.state));
-//debug_container.appendChild(enigma.renderState());
+const enigma = new EnigmaMachine(document.getElementById('container'));
+enigma.encrypt(Array(5).fill("A").join(""));
