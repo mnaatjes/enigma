@@ -6,8 +6,10 @@
  * - Creating custom elements
  * 
  */
-
+import { ALPHABET } from "./constants.js";
+import { create_element } from "./utils/create_element.js";
 import { AbstractElement } from "./custom_elements/AbstractElement.js";
+
 /*----------------------------------------------------------*/
 /**
  * Defines and Creates Custom HTML Component from AbstractElement and appends to DOM
@@ -32,15 +34,37 @@ function render(configuration){
      * Define new Construct
      */
     customElements.define(config.tag_name, class extends AbstractElement {
+        /**
+         * Set Observed Attributes from private _data object keys
+         * @type {Array}
+         * @uses config.props
+         */
+        /*
+        static get observedAttributes(){
+            return Object.keys(config.props);
+        }
+        */
+        /**
+         * @constructor
+         */
         constructor(){
             super(config);
         }
     });
     /**
-     * Mount
+     * Create Custom Element
      */
-    config.parent.appendChild(document.createElement(config.tag_name));
+    const element = document.createElement(config.tag_name);
+    /**
+     * Mount Custom Element
+     */
+    config.parent.appendChild(element);
+    /**
+     * Return Custom Element
+     */
+    return element;
 }
+
 /*----------------------------------------------------------*/
 /**
  * @function buildConfig
@@ -67,37 +91,79 @@ function buildConfig(tag_name, parent, content, properties={}){
     /**
      * Validate tag_name
      */
+    if(!tag_name.includes("-")){
+        throw new RangeError(`Parameter "tag_name" MUST include a hyphen (-)! "${tag_name}" provided`);
+    }
     /**
-     * Validate parent
+     * Validate parent:
+     * - Instance
+     * - Connected
      */
+    if(!(parent instanceof HTMLElement)){
+        throw new TypeError(`Parameter "parent" MUST be an HTML Element! Type: "${typeof parent}" provided!`);
+    }
+    if(parent.isConnected === false){
+        throw new DOMException(`Parameter "parent" HTML Element "${parent.outerHTML}" is NOT connected to the DOM!`);
+    }
     /**
-     * Validate Content
+     * Validate Content:
+     * - Type
      */
-    /**
-     * Check properties Exist:
-     */
-    /**
-     * Generate Content function and append properties
-     */
+    if(typeof content !== 'function'){
+        throw new TypeError(`Parameter "content" MUST be a Function! Type: "${typeof content}" provided!`);
+    }
     /**
      * Return results object
      */
-
+    return {
+        tag_name,
+        parent,
+        props: properties,
+        content: content
+    }
 }
 
-const config = buildConfig('invalidName', document.getElementById('invalid'), 12, {});
+/**
+ * @type {HTMLElement}
+ */
+const parent = document.getElementById('test_parent');
 
+/**
+ * @type {string}
+ */
+const content = function(instance){
+    /**
+     * Create Element
+     */
+    const button = create_element('button', {
+        textContent: instance.text,
+        style: {
+            backgroundColor: "cornflowerblue",
+            outline: "none",
+            padding: "0.5rem 1rem",
+            fontSize: "2rem",
+            color: "#333",
+            border: "1px solid #333",
+            borderRadius: "4px",
+            cursor: "pointer"
+        },
+        attributes: {
+            id: "test_id",
+            value: instance.value
+        }
+    });
+    /**
+     * Return outer HTML text
+     */
+    return button.outerHTML;
+};
 
 /**
  * @type {object}
  */
-const element_config = {
-    tag_name: 'test-element',
-    parent: document.getElementById('test_parent'),
-    props: {
-        title: "Gemini",
-        type: "Puppy",
-    },
-    content: function(instance){return `<b>${instance.title}</b>`;}
-};
-render(element_config);
+const config = buildConfig('test-element', parent, content, {
+    text: "Click here!",
+    value: "2"
+});
+const button = render(config);
+button.text = "New Test";

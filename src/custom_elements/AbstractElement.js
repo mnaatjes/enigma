@@ -7,6 +7,13 @@
  * @since 1.0 Created
  */
 export class AbstractElement extends HTMLElement {
+    
+    /**
+     * Count number of renders
+     * @type {int}
+     */
+    _renders = 0;
+
     /**
      * Data object containing values of props for getters and setters
      * @private
@@ -23,9 +30,9 @@ export class AbstractElement extends HTMLElement {
 
     /**
      * @private
-     * @property {boolean} _isConnected - Flag to track if the component is connected to the DOM.
+     * @property {boolean} _isInitialized - Flag to track if the component has been initialized after connection to DOM.
      */
-    _isConnected = false;
+    _isInitialized = false;
 
     /**
      * @private
@@ -35,23 +42,16 @@ export class AbstractElement extends HTMLElement {
     _privateState = new Map();
 
     /**
-     * @static
-     * @method observedAttributes
-     * @returns {string[]} An array of attribute names to observe for changes.
-     *
-     * Subclasses should override this getter to declare which attributes
-     * they want to react to via `attributeChangedCallback`.
-     * @example
-     * static get observedAttributes() {
-     * return ['my-attribute', 'another-attribute'];
-     * }
+     * TODO: Test
      */
-    static get observedAttributes() {
-        return [];
+    static get observedAttributes(){
+        return ['text', 'value'];
     }
     /*----------------------------------------------------------*/
     /**
      * @constructor
+     * 
+     * @param {object} config 
      */
     /*----------------------------------------------------------*/
     constructor(config){
@@ -106,6 +106,8 @@ export class AbstractElement extends HTMLElement {
                      * @returns {void}
                      */
                     set: function(value){
+                        // Set attribute data
+                        this.setAttribute(prop_name, value);
                         // Set value in data
                         this._data[prop_name] = value;
                         // Re-render html component
@@ -114,31 +116,87 @@ export class AbstractElement extends HTMLElement {
                 });
             }
         });
-        /**
-         * Render Template and populate content
-         */
-        this.render();
-
     }
     /*----------------------------------------------------------*/
     /**
-     * Render
+     * Renders (or re-renders) custom html element in DOM:
+     * - Checks if not initialized:
+     *      -> Creates Template Element
+     *      -> Clones template and appends to shadowRoot
+     * - 
+     * 
+     * @param {void}
+     * @uses this._content
+     * 
+     * @returns {void}
      */
     /*----------------------------------------------------------*/
     render(){
         /**
-         * Create Template:
-         * - Create Template Element
-         * - Populate innerHTML
+         * Check if not initialized
          */
-       const _template      = document.createElement('template');
-       _template.innerHTML  = this._content(this);
-       /**
-        * Append template to shadowRoot:
-        * - Clone template
-        * - Append
-        */
-        this.shadowRoot.appendChild(_template.content.cloneNode(true));
+        if(this._isInitialized === false){
+            /**
+             * Create Template:
+             * - Create Template Element
+             * - Populate innerHTML
+             */
+            const _template      = document.createElement('template');
+            _template.innerHTML  = this._content(this);
+            /**
+            * Append template to shadowRoot:
+            * - Clone template
+            * - Append
+            */
+            this.shadowRoot.appendChild(_template.content.cloneNode(true));
+            /**
+             * Set initialized
+             */
+            this._isInitialized = true;
+        } else {
+            /**
+             * Re-render inner html of component
+             */
+            this.shadowRoot.innerHTML = this._content();
+        }
+        /**
+         * Increment renders
+         */
+        this._renders++;
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Called when Custom Element is first connected to DOM
+     * - Validate shadowRoot created
+     * - Initialize properties or internal state
+     * - Attach listeners
+     * 
+     * @uses this.render()
+     * 
+     * @returns {void}
+     */
+    /*----------------------------------------------------------*/
+    connectedCallback(){
+        console.warn('Connected Callback');
+        /**
+         * Invoke render() method
+         */
+        this.render();
+        console.log("Renders:", this._renders);
+    }
+    /*----------------------------------------------------------*/
+    /**
+     * Attribute changed callback
+     */
+    /*----------------------------------------------------------*/
+    attributeChangedCallback(name, old_value, new_value){
+        console.error('attributeChangedCallback');
+        /**
+         * Cycle props
+         */
+        Object.keys(this._data).forEach(prop => {
+            console.log(prop);
+        });
     }
     /*----------------------------------------------------------*/
 }
