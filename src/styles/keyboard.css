@@ -97,18 +97,19 @@ button.keyboard--key {
 */
 /*----------------------------------------------------------*/
 button.keyboard--key.--input {
+    cursor: pointer;
     /**
     *   Border
     */
-    border-color: #252525;
+    border-color: #B5A642;
     /**
     *   Display
     */
-    background-color: #e0e0e0;
+    background-color: #252525;
     /**
     *   Font
     */
-    color: var(--color-border);
+    color: #e0e0e0;
     /**
     *   Shadow
     */
@@ -118,7 +119,7 @@ button.keyboard--key.--input:hover {
     /**
     *   Display
     */
-    background-color: #fff;
+    background-color: #474747;
     /**
     *   Shadow
     */

@@ -1,8 +1,11 @@
 /**
  * @namespace Enigma
- * @version 2.5
- * @since 2.5 Overview:
- * - Creating components
- * - Creating custom elements
+ * @version 2.1
+ * @since 2.1 Added
  * 
  */
+
+import { Keyboard } from "./components/Keyboard.js";
+
+const keyboard = new Keyboard();
+console.log(keyboard);
