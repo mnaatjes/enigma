@@ -13,7 +13,23 @@ button {
     outline: none;
     border: none;
     margin: 0;
-    padding: 0;
+    padding: var(--padding-main);
     color: var(--color-font);
     background-color: #fff;
+}
+/**
+*   INPUT
+*/
+input {
+    outline: none;
+    border: none;
+    border-radius: var(--radius);
+    border-style: solid;
+    border-color: var(--color-font);
+    border-width: 1px;
+    margin: 0;
+    padding: var(--padding-main);
+    color: var(--color-font);
+    background-color: #fff;
+    font-size: 1rem;
 }

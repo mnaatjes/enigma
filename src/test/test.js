@@ -5,7 +5,6 @@
  * @version 2.1
  */
 import { EnigmaMachine } from "./components/Enigma.js";
-import { json_to_table } from "./utils/json_to_table.js";
 /**
  * HTML Elements:
  */
@@ -19,4 +18,6 @@ const containers = {
  * Enigma
  */
 const enigma = new EnigmaMachine(document.getElementById('container'));
-enigma.encrypt(Array(5).fill("A").join(""));
+const output = enigma.encrypt(Array(5).fill("A").join(""));
+console.log(output);
+const ele = enigma.renderState();

@@ -7,7 +7,6 @@ import { validate_signal } from "../utils/validate_signal.js";
 import { DEBUG } from "../constants.js";
 import { get_fixed_index } from "../utils/get_fixed_index.js";
 import { create_element } from "../utils/create_element.js";
-import { EnigmaElement } from "../custom_elements/EnigmaElement.js";
 
 /*----------------------------------------------------------*/
 /**
@@ -808,11 +807,6 @@ export class EnigmaMachine {
             throw new RangeError(`Could not resolve character "${char}" to index "${index}"`);
         }
     }
-    /*----------------------------------------------------------*/
-    /*----------------------------------------------------------*/
-    /**
-     * Define Element
-     */
     /*----------------------------------------------------------*/
 
 }

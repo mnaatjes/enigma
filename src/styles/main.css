@@ -5,6 +5,7 @@
 /*----------------------------------------------------------*/
 @import url(./resets.css);
 @import url(./rotors.css);
+@import url(./plugboard.css);
 @import url(./keyboard.css);
 /*----------------------------------------------------------*/
 /**
@@ -13,13 +14,20 @@
 /*----------------------------------------------------------*/
 :root {
   --radius: 4px;
+
   /**
   * COLORS
   */
-  --color-border: #333;
   --color-font: #333;
-  /*--color-bkrnd: #f4f4f4;*/
-  --color-bkrnd: #bebebe;
+  --color-font-nav: #fff;
+  /**
+  * PADDING
+  */
+  --padding-main: 1rem 0.5rem;
+  /**
+  * TRANSITIONS
+  */
+  --transition-rotor: all 0.25s ease-in-out;
 }
 /*----------------------------------------------------------*/
 /**
@@ -47,7 +55,6 @@ body {
   /**
   * display
   */
-  background-color: var(--color-bkrnd);
 }
 /*----------------------------------------------------------*/
 /**
@@ -58,7 +65,7 @@ header {
   /**
   * position
   */
-  padding: 1em;
+  padding: var(--padding-main);
   /**
   * font
   */
@@ -72,7 +79,7 @@ header {
 nav {
   margin: 0;
   padding: 0.5em;
-  background-color: #333;
+  background-color: var(--color-font);
 }  
 nav ul {
   list-style: none;
@@ -83,7 +90,7 @@ nav ul {
 }
 nav a {
   text-decoration: none;
-  color: #333;
+  color: var(--color-font-nav);
   padding: 0.5em 1em;
 }
 /*----------------------------------------------------------*/
@@ -99,11 +106,10 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: red;
   /**
   * Position
   */
-  padding: 1rem;
+  padding: var(--padding-main);
 }
 /*----------------------------------------------------------*/
 /**
@@ -121,10 +127,10 @@ section {
 */
 /*----------------------------------------------------------*/
 footer {
-  background-color: #333;
-  color: #fff;
+  background-color: var(--color-font);
+  color: var(--color-font-nav);
   text-align: center;
-  padding: 1em;
+  padding: var(--padding-main);
 }
 /*----------------------------------------------------------*/
 /**

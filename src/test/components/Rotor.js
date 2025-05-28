@@ -231,8 +231,10 @@ export class Rotor {
                 "Notch:   ", this.notch, "-->", notch
             )
         }
+        /**
+         * Assign Notch
+         */
         this.notch = notch;
-        
     }
     /*----------------------------------------------------------*/
     /**

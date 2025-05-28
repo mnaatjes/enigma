@@ -1,0 +1,66 @@
+/**
+*   PLUGBOARD
+*/
+article#plugboard {
+    /**
+    *   Display
+    */
+    /**
+    *   Position
+    */
+    margin: 1rem;
+    /**
+    *   Font
+    */
+    /**
+    *   Animation
+    */
+    /**
+    *   Border
+    */
+}
+
+div.plug_row {
+    /**
+    *   Display
+    */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    /**
+    *   Position
+    */
+    /**
+    *   Font
+    */
+    /**
+    *   Animation
+    */
+    /**
+    *   Border
+    */
+}
+
+div[id^="plug__"] {
+    /**
+    *   Display
+    */
+    display: flex;
+    flex-direction: column;
+    /**
+    *   Position
+    */
+    margin: 0.25rem 0.5rem;
+    /**
+    *   Font
+    */
+    font-size: 1.5rem;
+    /**
+    *   Animation
+    */
+    /**
+    *   Border
+    */
+}
