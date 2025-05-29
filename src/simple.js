@@ -8,7 +8,7 @@
  * @since 1.0   Created:
  */
 
+import { RotorElement } from "./elements/simple/RotorElement.js";
 import { draw_simple_rotor } from "./elements/simple/simple_rotor.js";
-
-const ele = draw_simple_rotor();
-console.log(ele);
+const rotor = new RotorElement();
+console.log(rotor);

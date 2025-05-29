@@ -18,48 +18,47 @@
       <h2>Input</h2>
       <textarea name="" id="" placeholder="AAAAA AAAAA"></textarea>
     </section>
-    <section>
+    <section id="settings__container">
       <h2>Enigma Machine Settings</h2>
-      <div class="settings__grid">
-        <div class="settings__grid--item col3">
-          <h4>Reflector</h4>
-          <select name="" id="">
-            <option value="">UKW A</option>
-            <option value="">UKW B</option>
-            <option value="">UKW C</option>
-          </select>
-        </div>
-        <div class="settings__grid--item col1">
+      <article class="settings__row">
+        <h4>Reflector</h4>
+        <select name="" id="">
+          <option value="">UKW B</option>
+        </select>
+      </article>
+      <!--ROTOR 01 START-->
+      <article class="settings__grid" id="rotor__01">
+        <div class="settings__grid--item">
           <h4>Rotor</h4>
           <select name="" id="rotor__01__name">
             <option value="">I</option>
             <option value="">II</option>
-            <option value="">III</option>
-            <option value="">IV</option>
             <option value="">VIII</option>
           </select>
         </div>
-        <div class="settings__grid--item col1">
+        <div class="settings__grid--item">
           <h4>Position</h4>
-          <div class="field--container" id="rotor__01__pos">
+          <div class="field--container">
             <button>&minus;</button>
-            <div class="display">A</div>
+            <span id="rotor__01__pos">A</span>
             <button>&plus;</button>
           </div>
         </div>
-        <div class="settings__grid--item col1">
+        <div class="settings__grid--item">
           <h4>Ring</h4>
-          <div class="field--container" id="rotor__01__ring">
+          <div class="field--container">
             <button>&minus;</button>
-            <div class="display">Z</div>
+            <span id="rotor__01__ring">Z</span>
             <button>&plus;</button>
           </div>
         </div>
-        <div class="settings__grid--item col3">
-          <h4>Plugboard</h4>
-          <input type="text" placeholder="AC DF IY">
         </div>
-      </div>
+      </article>
+      <!--ROTOR 01 END-->
+      <article class="settings__row">
+        <h4>Plugboard</h4>
+        <input type="text" placeholder="AB CD EF">
+      </article>
     </section>
     <section>
       <h2>Output</h2>

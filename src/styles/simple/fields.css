@@ -1,0 +1,45 @@
+/**
+*   FIELDS for ENIGMA SIMPLE
+*/
+.field--container {
+    /**
+    *   Display
+    */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.field--container span,
+.field--container button {
+    /**
+    *   Position
+    */
+    padding: 0.25rem;
+    margin: 0.25rem;
+    /**
+    *   Font
+    */
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-secondary);
+    /**
+    *   Animation
+    */
+    transition: all 0.25s ease-in-out;
+}
+
+.field--container span {
+    display: inline-block;
+}
+
+.field--container button {
+    border-radius: var(--radius);
+}
+.field--container button:hover {
+    background-color: cornflowerblue;
+}
+.field--container button:active {
+    box-shadow: inset 2px 2px 1px rgba(0, 0, 0, 0.3);
+}

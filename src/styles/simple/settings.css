@@ -1,7 +1,7 @@
 /**
 *   SETTINGS: GRID
 */
-.settings__grid {
+article.settings__grid {
     /**
     *   User
     */
@@ -13,170 +13,55 @@
     */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: 1fr;
     gap: 0;
-    /**
-    *   Bkrnd
-    */
     /**
     *   Border
     */
 }
 
 /**
-*   SETTINGS: GRID ITEM
+*   GRID ITEM | ARTICLE ROW
 */
+article.settings__row,
 .settings__grid--item {
-    /**
-    *   User
-    */
-    /**
-    *   Position
-    */
-    padding: 1rem;
     /**
     *   Display
     */
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    justify-content: space-between;
     align-items: center;
-    /**
-    *   Bkrnd
-    */
-    /**
-    *   Border
-    */
-    border-top: 1px solid #c7c7c7;
-    /**
-    *   Font
-    */
-    /**
-    *   Animation
-    */
 }
 
 /**
-*   COL Span 1
+*   GRID ITEM
 */
-.settings__grid--item.col1 {grid-column: span 1;}
-.settings__grid--item.col1:not(:nth-last-of-type(2)) {
-    border-right: 1px solid #c7c7c7;
+.settings__grid--item {
+    grid-column: span 1;
 }
 
 /**
-*   COL Span 3
+*   GRID ITEM SELECT | ROW SELECT | INPUT
 */
-.settings__grid--item.col3 {grid-column: span 3;}
-
-/**
-*   SELECT | INPUT
-*/
-.settings__grid--item input[type="text"],
+.settings__row input[type="text"],
+.settings__row select,
 .settings__grid--item select {
     /**
-    *   User
-    */
-    /**
     *   Position
     */
-    margin: 0.5rem 0;
     width: 100%;
+    padding: 0.25rem;
+    margin: 0.25rem;
+    /**
+    *   Font
+    */
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-secondary);
     text-align: center;
     /**
-    *   Display
-    */
-    /**
-    *   Bkrnd
-    */
-    /**
-    *   Border
-    */
-    /**
-    *   Font
-    */
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-secondary);
-    /**
     *   Animation
     */
-}
-
-/**
-*   SETTINGS EDITOR FIELD
-*/
-.field--container {
-    /**
-    *   User
-    */
-    /**
-    *   Position
-    */
-    /**
-    *   Display
-    */
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    /**
-    *   Bkrnd
-    */
-    /**
-    *   Border
-    */
-    /**
-    *   Font
-    */
-    /**
-    *   Animation
-    */
-}
-
-/**
-*   FIELD BUTTONS | DISPLAY
-*/
-.field--container .display,
-.field--container button {
-    /**
-    *   User
-    */
-    /**
-    *   Position
-    */
-    padding: 0.5rem;
-    /**
-    *   Display
-    */
-    /**
-    *   Bkrnd
-    */
-    /**
-    *   Border
-    */
-    border-radius: var(--radius);
-    /**
-    *   Font
-    */
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-secondary);
-    /**
-    *   Animation
-    */
-}
-
-/**
-*   DISPLAY
-*/
-.field--container .display {
-    margin: 0 0.5rem;
-}
-
-/**
-*   BUTTON
-*/
-.field--container button {
-}
-.field--container button:hover {
-    background-color: cornflowerblue;
+    transition: all 0.25s ease-in-out;
 }

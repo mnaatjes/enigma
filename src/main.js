@@ -121,5 +121,3 @@ function drawRotorWindow(){
     });
     container.appendChild(letters);
 }
-
-drawRotorWindow();
