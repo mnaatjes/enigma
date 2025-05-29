@@ -15,30 +15,48 @@ article#ringstellung {
 /**
 *   ROTOR
 */
-div[id^="rotor__"] {
+div.rotor__window {
+  --window-size: 1.75rem;
   /**
   * User
   */
   user-select: none;
   cursor: pointer;
   /**
-  * Display
-  */
-  /**
-  * Radius
-  */
-  border: 1px solid var(--color-font);
-  border-radius: var(--radius);
-  /**
   * Position
   */
   margin: 0.5rem;
   padding: 0.5rem;
+  overflow: hidden;
+  width: var(--window-size);
+  height: var(--window-size);
   /**
-  * Font
+  * Border
   */
+  border: 1px solid var(--color-font);
+  border-radius: var(--radius);
+}
+/**
+* LETTERS
+*/
+div.rotor__letters {
+  /**
+  * Display
+  */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /**
+  * Border
+  */
+  border: 1px solid red;
   /**
   * Animation
   */
   transition: var(--transition-rotor);
+  /**
+  * Font
+  */
+  font-size: 1rem;
 }

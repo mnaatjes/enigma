@@ -1,0 +1,57 @@
+/**
+*   RESETS: ENIGMA SIMPLE
+*/
+
+/**
+*   SELECT
+*/
+select {
+    outline: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+    appearance: none; /*Resets padding*/
+}
+
+/**
+*   BUTTON
+*/
+button {
+    user-select: none;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/**
+*   HEADINGS
+*/
+h1, h2, h3, h4, h5, h6 {
+    padding: 0;
+    margin: 0;
+}
+
+/**
+*   INPUT
+*/
+input {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    outline: none;
+    border: none;
+}
+
+/**
+*   TEXTAREA
+*/
+textarea {
+    outline: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}

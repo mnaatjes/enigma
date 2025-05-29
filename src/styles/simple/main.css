@@ -1,0 +1,177 @@
+/**
+*   MAIN CSS FOR SIMPLE ENIGMA
+*/
+/**
+*   IMPORTS
+*/
+@import url(./resets.css);
+@import url(./input_output.css);
+@import url(./settings.css);
+/**
+*   ROOT
+*/
+:root {
+    /**
+    *   Fonts
+    */
+    --font-primary: Arial, Helvetica, sans-serif;
+    --font-secondary: 'Courier New', Courier, monospace;
+    --font-size-primary: 1.25rem;
+    --font-size-secondary: 1.25rem;
+    /**
+    *   Colors
+    */
+    --color-font: #333;
+    --color-font-inverse: #fcfcfc;
+    --color-bkrnd-primary: #fcfcfc;
+    /**
+    *   Borders
+    */
+    --radius: 4px;
+}
+/**
+*   BODY
+*/
+body {
+    /**
+    *   Position
+    */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /**
+    *   Bkrnd
+    */
+    background-color: var(--color-bkrnd-primary);
+    /**
+    *   Font
+    */
+    color: var(--color-font);
+    font-family: var(--font-primary);
+}
+
+/**
+*   NAV, FOOTER
+*/
+nav, footer {
+    /**
+    *   Position
+    */
+    padding: 0.5rem 1rem;
+    /**
+    *   Background
+    */
+    background-color: var(--color-font);
+    /**
+    *   Font
+    */
+    color: var(--color-font-inverse);
+    font-size: 0.75rem;
+}
+/**
+*   Footer
+*/
+footer {
+    text-align: center;
+}
+
+/**
+*   HEADER, MAIN
+*/
+header, main {
+    /**
+    *   Position
+    */
+    padding: 1rem;
+    /**
+    *   Background
+    */
+    /**
+    *   Font
+    */
+}
+
+/**
+*   MAIN
+*/
+main {
+    /**
+    *   Position
+    */
+    /**
+    *   Display
+    */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+/**
+*   SECTION
+*/
+section {
+    /**
+    *   Position
+    */
+    flex: 1;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+    min-width: 200px;
+    /**
+    *   Display
+    */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    /**
+    *   Bkrnd
+    */
+    /**
+    *   Border
+    */
+    border-radius: var(--radius);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    /**
+    *   Font
+    */
+    /**
+    *   Animation
+    */
+}
+
+/**
+*   SECTION HEADINGS
+*/
+section h1,
+section h2,
+section h3,
+section h4 {
+    margin-bottom: 0.5rem;
+}
+
+/**
+*   FLEX
+*/
+.__row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.--between {justify-content: space-between;}
+.--center {align-content: center;}
+
+/**
+*   MEDIA QUERIES
+*/
+@media screen and (max-width: 925px) {
+  /*Row to Col*/
+  main {
+    flex-direction: column;
+  }
+  section {
+    align-self: center;
+    min-width: 400px;
+  }
+}

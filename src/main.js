@@ -101,15 +101,25 @@ function drawPlugboard(){
 drawPlugboard();
 
 /**
+ * @function drawRotors
+ */
+function drawRotors(){
+    
+}
+
+/**
  * Build Alphabet Turnstile
  */
 function drawRotorWindow(){
-    const container = element.rotors.querySelector('[id="rotor__01"]');
-    ALPHABET.forEach(letter => {
-        container.appendChild(create_element('div', {
-            textContent: letter
-        }))
+    const container = element.rotors.querySelector('[class="rotor__window"]');
+    const letters   = create_element('div', {
+        attributes: {id: 'rotor__01'}, 
+        classList: ["rotor__letters"]
     });
+    ALPHABET.forEach(letter => {
+        letters.appendChild(create_element('div', {textContent: letter}));
+    });
+    container.appendChild(letters);
 }
 
 drawRotorWindow();
