@@ -22,5 +22,5 @@ import { DEFAULT_PLUGBOARD_SETTINGS, DEFAULT_REFLECTOR, DEFAULT_ROTOR_SETTINGS }
 import { Rotor } from "../src/components/Rotor.js";
 
 // Debugging
-const r1 = new Rotor();
+const r1 = new Rotor(DEFAULT_ROTOR_SETTINGS[1]);
 console.log(r1);

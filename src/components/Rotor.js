@@ -1,227 +1,81 @@
+import { ALPHABET, ROTOR_CONFIGURATIONS } from "../../constants.js";
+
 /**
- * @memberof Enigma
+ * Represents a single rotor of the Enigma Machine
+ * @class Rotor
+ * 
+ * @since 1.0.0: Created - depreciated
+ * @since 2.0.0: 
+ * - Restructured
+ * 
+ * @version 2.0.0
+ * 
+ * @param {object} rotor_configuration - The configuration object for a single rotor.
+ * @param {string} rotor_configuration.name - The name of the rotor (e.g., "I", "II", "III").
+ * @param {string} rotor_configuration.position - The starting position of the rotor's alphabet ring.
+ * @param {string} rotor_configuration.ringSetting - The ring setting (Ringstellung) of the rotor.
  */
-
-import { ALPHABET, DEBUG, ROTOR_PROPS } from "../constants.js";
-import { get_fixed_char } from "../utils/get_fixed_character.js";
-import { get_fixed_index } from "../utils/get_fixed_index.js";
-import { validate_char } from "../utils/validate_char.js";
-import { validate_signal } from "../utils/validate_signal.js";
-
 export class Rotor {
     /**
-     * Settings
+     * The initial configuration settings for the rotor.
      * @type {object}
+     * @property {string} configuration.name - The name of the rotor (e.g., "I", "II", "III").
+     * @property {string} configuration.position - The starting position of the rotor's alphabet ring.
+     * @property {string} configuration.ringSetting - The ring setting (Ringstellung) of the rotor.
      */
-    settings;
+    configuration = {};
+
     /**
-     * Regular Alphabet LEFT
-     * @type {array}
+     * The active configuration and state of the rotor and its properties
+     * @type {object}
+     * @property {string} state.name - The name of the rotor (e.g., "I", "II", "III").
+     * @property {string} state.ringPosition - The position of the rotor's alphabet ring (e.g. "A")
+     * @property {string} state.ringSetting - The ring setting (Ringstellung) of the rotor (e.g. "B")
+     * @property {string} state.notch - The current notch position (e.g.)
+     * TODO Lead Character
+     * TODO INT Value
      */
-    fixed = ALPHABET;
+    state = {};
+
     /**
-     * Cypher RIGHT
-     * @type {array}
+     * Fixed Alphabet Array for rotor a.k.a Left Side
+     * @type {array} fixed
+     */
+    alphabetRing = ALPHABET;
+
+    /**
+     * Wiring Array for cypther a.k.a Right side
+     * @type {array} wiring
      */
     wiring = [];
-    /*----------------------------------------------------------*/
+
     /**
+     * Notch associated with initial wiring diagram - prior to any changes
+     * @type {string} notch
+     * @example "Q" for ROTOR I
+     */
+    notch = "";
+
+    /**
+     * Constructor
+     */
+    constructor(rotor_configuration){
+        // Assign Initial Configuration
+        this.configuration = rotor_configuration;
+        
+        // Set initial wiring and notch properties
+        this.wiring = ROTOR_CONFIGURATIONS[this.configuration.name].wiring;
+        this.notch  = ROTOR_CONFIGURATIONS[this.configuration.name].notch;
+    }
+
+    /**
+     * Rotate the rotor by n positions
      * 
-     * @param {object} settings
+     * @param {int} n Number of positions to advance or turn. Default = 1
+     * @param {boolean} forward Direction in which to rotate. Default is forward
+     * @returns {void}
      */
-    /*----------------------------------------------------------*/
-    constructor(settings={}){
-        this.settings   = settings;
-        this.name       = settings.name;
-        this.wiring     = this.settings.wiring;
-        this.notch      = this.settings.notch;
-        this.order      = this.settings.order;
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Forward
-     */
-    /*----------------------------------------------------------*/
-    forward(signal){
-        /**
-         * Validate
-         */
-        if(!validate_signal(signal)){
-            throw new Error();
-        }
-        /**
-         * Get output signal
-         */
-        const input_char    = this.wiring[signal];
-        const output_signal = this.fixed.indexOf(input_char);
-        /**
-         * Validate and return
-         */
-        return output_signal;
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Backward
-     */
-    /*----------------------------------------------------------*/
-    backward(signal){
-        /**
-         * Validate
-         */
-        if(!validate_signal(signal)){
-            throw new Error();
-        }
-        /**
-         * Get output signal
-         */
-        const input_char    = this.fixed[signal];
-        const output_signal = this.wiring.indexOf(input_char);
-        /**
-         * Validate and return
-         */
-        return output_signal;
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Shows current rotors
-     */
-    /*----------------------------------------------------------*/
-    show(){
-        console.log(this.fixed.join(""));
-        console.log(this.wiring.join(""));
-        console.log('');
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Rotate
-     * 
-     * @param {int} n Number of rotations
-     * @param {boolean} forward Default: true
-     */
-    /*----------------------------------------------------------*/
     rotate(n=1, forward=true){
-        /**
-         * Rotate FIXED array:
-         * - Copy
-         * - Loop n
-         * - Assign
-         */
-        const copy_fixed = [...this.fixed];
-        /**
-         * Loop n:
-         * - Forward
-         * - Reverse
-         */
-        if(forward === true){
-            for(let i = 0; i < n; i++){
-                const shifted = copy_fixed.shift();
-                copy_fixed.push(shifted);
-            }
-        } else if(forward === false){
-            for(let i = 25; i >= n; i--){
-                const shifted = copy_fixed.shift();
-                copy_fixed.push(shifted);
-            }
-        }
-        /**
-         * Rotate WIRING array:
-         * - Copy
-         * - Loop n
-         * - Assign
-         */
-        const copy_wiring = [...this.wiring];
-        /**
-         * Loop n:
-         * - Forward
-         * - Reverse
-         */
-        if(forward === true){
-            for(let i = 0; i < n; i++){
-                const shifted = copy_wiring.shift();
-                copy_wiring.push(shifted);
-            }
-        } else if(forward === false){
-            for(let i = 25; i >= n; i--){
-                const shifted = copy_wiring.shift();
-                copy_wiring.push(shifted);
-            }
-        }
-        /**
-         * Debugging
-         */
-        if(DEBUG.setRings){
-            if(forward === false){
-                console.log(copy_fixed.join(""));
-                console.log(copy_wiring.join(""));
-            }
-        }
-        /**
-         * Assign Both
-         */
-        this.fixed  = copy_fixed;
-        this.wiring = copy_wiring;
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Set ring
-     */
-    /*----------------------------------------------------------*/
-    setRing(n=0){
-        /**
-         * Rotate Rotor Backwards
-         */
-        this.rotate(n, false);
-        /**
-         * Adjust turnover notch relative to wiring:
-         * - Get index of existing notch
-         * - Adjust
-         * - Render new notch character
-         */
-        const index = get_fixed_index(this.notch);
-        const notch = get_fixed_char(((index - n) + 26) % 26);
-        /**
-         * Debugging
-         */
-        if(DEBUG.setRings){
-            console.log(
-                " Name:    ", this.name, "\n",
-                "Ring:    ", this.settings.ring_setting, "\n",
-                "Position:", this.getHead(), "-->", this.settings.init_position, "\n",
-                "Notch:   ", this.notch, "-->", notch
-            )
-        }
-        this.notch = notch;
         
     }
-    /*----------------------------------------------------------*/
-    /**
-     * Rotate to letter index
-     */
-    /*----------------------------------------------------------*/
-    setPosition(arg){
-        /**
-         * Validate
-         */
-        const index = validate_char(arg) ? get_fixed_index(arg) : (
-            validate_signal(arg) ? arg : null
-        );
-        /**
-         * Rotate or throw Error
-         */
-        if(index !== null){
-            /**
-             * Rotate by index
-             */
-            this.rotate(index);
-        } else {
-            throw new Error(`Unable to set initial position on Rotor: ${this.name} using parameter: "${arg}"`);
-        }
-    }
-    /*----------------------------------------------------------*/
-    /**
-     * Get Current or Head of rotor
-     */
-    /*----------------------------------------------------------*/
-    getHead(){return this.fixed[0];}
-    /*----------------------------------------------------------*/
 }
