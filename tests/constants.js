@@ -3,37 +3,22 @@
  * @memberof Enigma
  */
 
-/**
- * Fixed alphabet is never changed, advanced, or altered
- * @type {array}
- */
-export const ALPHABET  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
 
 /**
  * Default Rotor Settings
+ * @deprecated
  */
 export const DEFAULT_ROTOR_SETTINGS = {
     rotors: ["I", "II", "III"],
     positions: ["A", "A", "A"],
-    ring_settings: ["A", "A", "A"] // P, D, U ???
+    ring_settings: ["A", "A", "A"]
 };
 
-/**
- * Reflector Settings
- */
-export const DEFAULT_REFLECTOR_SETTING = "UKB_A";
-
-/**
- * Plugboard Settings
- */
-export const DEFAULT_PLUGBOARD_SETTINGS = {
-    A: "R", // Reverse also true: R -> A && A -> R
-    K: "G",
-    O: "X"
-};
 
 /**
  * Reflector Props
+ * @depreciated
  */
 export const REFLECTOR_PROPS = {
     "beta": "LEYJVCNIXWPBQMDRTAKZGFUHOS".split(""),
@@ -45,9 +30,14 @@ export const REFLECTOR_PROPS = {
     "thinC": "RDOBJNTKVEHMLFCWZAXGYIPSUQ".split(""),
     "ETW": "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
 };
+/**
+ * @const {object} REFLECTOR_CONFIGURATIONS
+ */
+export const REFLECTOR_CONFIGURATIONS = REFLECTOR_PROPS;
 
 /**
- * Rotor Properties
+ * @const {object} Rotor Properties
+ * @depreciated
  */
 export const ROTOR_PROPS = {
     "I": {
@@ -85,8 +75,14 @@ export const ROTOR_PROPS = {
 };
 
 /**
+ * @const {object} ROTOR_CONFIGURATIONS
+ */
+export const ROTOR_CONFIGURATIONS = ROTOR_PROPS;
+
+/**
  * Debug Settings Object
  * @type {Object}
+ * @deprecated
  */
 export const DEBUG = {
     all: false,
