@@ -17,9 +17,9 @@
  * @const {object} DEFAULT_PLUGBOARD_SETTINGS
  */
 export const DEFAULT_PLUGBOARD_SETTINGS = {
-    A: "R", // Reverse also true: R -> A && A -> R
-    K: "G",
-    O: "X"
+    "A": "R",
+    "K": "G",
+    "O": "X"
 };
 
 /**
@@ -31,14 +31,11 @@ export const DEFAULT_REFLECTOR = "UKB_A";
 
 /**
  * Configration of all 3 initial rotors
- * @const {array} DEFAULT_ROTOR_CONFIGURATIONS
+ * @const {array} DEFAULT_ROTOR_SETTINGS
  */
-export const DEFAULT_ROTOR_CONFIGURATIONS = [
+export const DEFAULT_ROTOR_SETTINGS = [
     {name: "I", position: "A", ringSetting: "A"},
+    {name: "II", position: "A", ringSetting: "A"},
+    {name: "III", position: "A", ringSetting: "A"}
 ];
 
-export const DEFAULT_ROTOR_SETTINGS = {
-    rotors: ["I", "II", "III"],
-    positions: ["A", "A", "A"],
-    ring_settings: ["A", "A", "A"]
-};
