@@ -23,4 +23,4 @@ import { Rotor } from "../src/components/Rotor.js";
 
 // Debugging
 const r1 = new Rotor(DEFAULT_ROTOR_SETTINGS[1]);
-console.log(r1);
+r1.rotate(1, false);

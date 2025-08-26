@@ -31,6 +31,7 @@ export class Rotor {
      * @property {string} state.name - The name of the rotor (e.g., "I", "II", "III").
      * @property {string} state.ringPosition - The position of the rotor's alphabet ring (e.g. "A")
      * @property {string} state.ringSetting - The ring setting (Ringstellung) of the rotor (e.g. "B")
+     * @property {int} state.offset - Numeric offset from initial position; index 0 = "A"
      * @property {string} state.notch - The current notch position (e.g.)
      * TODO Lead Character
      * TODO INT Value
@@ -76,6 +77,64 @@ export class Rotor {
      * @returns {void}
      */
     rotate(n=1, forward=true){
-        
+        // Copy alphabet ring
+        const copyAlphabetRing = [...this.alphabetRing];
+
+        // Copy wiring array
+        const copyWiring = [...this.wiring];
+
+        // Determine direction of rotation
+        if(forward === true){
+            // Rotate Forwards
+            for(let i = 0; i < n; i++){
+                /**
+                 * Rotate alphabetRing Copy:
+                 * - shift first character off array
+                 * - prepend shifted character onto array
+                 */
+                const shiftedCharAlphabet = copyAlphabetRing.shift();
+                copyAlphabetRing.push(shiftedCharAlphabet);
+
+                /**
+                 * Rotate wiring copy:
+                 * - shift off first char
+                 * - prepent to array
+                 */
+                const shiftedCharWiring = copyWiring.shift();
+                copyWiring.push(shiftedCharWiring);
+
+            }
+        } else {
+            // Rotate Backwards
+            for(let i = 25; i >= n; i--){
+                /**
+                 * Rotate alphabetRing Copy:
+                 * - shift first character off array
+                 * - prepend shifted character onto array
+                 */
+                const shiftedCharAlphabet = copyAlphabetRing.shift();
+                copyAlphabetRing.push(shiftedCharAlphabet);
+
+                /**
+                 * Rotate wiring copy:
+                 * - shift off first char
+                 * - prepent to array
+                 */
+                const shiftedCharWiring = copyWiring.shift();
+                copyWiring.push(shiftedCharWiring);
+            }
+        }
+        // Assign rotor properties from rotated copies
+        this.alphabetRing   = copyAlphabetRing;
+        this.wiring         = copyWiring;
+
+        // Update State properties
+        this.state.offset = (forward === true) ? 
+            (n +  ALPHABET.indexOf(this.alphabetRing[0])) % ALPHABET.length : 
+            ((ALPHABET.indexOf(this.alphabetRing[0]) - n) % ALPHABET.length + ALPHABET.length) % ALPHABET.length;
+        console.log(copyAlphabetRing.join(" "));
+        console.log(copyWiring.join(" "));
+        console.log(this.state);
+        console.log(ALPHABET.indexOf(this.alphabetRing[0]));
     }
 }
