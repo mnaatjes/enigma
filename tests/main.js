@@ -11,7 +11,7 @@
 /**
  * @description Imports the Constant Configuration variables for the Enigma Machine
  */
-import { ALPHABET, ROTOR_CONFIGURATIONS, REFLECTOR_CONFIGURATIONS } from "../constants.js";
+//import { ALPHABET, ROTOR_CONFIGURATIONS, REFLECTOR_CONFIGURATIONS } from "../constants.js";
 
 /**
  * @description Imports the default settings for the initial Enigma Machine Configuration
@@ -27,37 +27,15 @@ import { Plugboard } from "../src/components/Plugboard.js";
 import { Reflector } from "../src/components/Reflector.js";
 import { EnigmaMachine } from "../src/EnigmaMachine.js";
 
-/**
- * Debugging
- */
-//console.log(DEFAULT_ROTOR_SETTINGS);
-//console.log(DEFAULT_REFLECTOR);
-//console.log(DEFAULT_PLUGBOARD_SETTINGS);
-
 const enigma = new EnigmaMachine({
-    plugboard: {A: "R", G: "K", O: "X"},
+    plugboard: {A: "B", C: "D", E: "F"},
     rotors: [
-        {name: "I", position: "D", ringSetting: "A"},
-        {name: "II", position: "O", ringSetting: "A"},
-        {name: "III", position: "G", ringSetting: "A"},
+        {name: "IV", position: "C", ringSetting: "A"},
+        {name: "II", position: "A", ringSetting: "A"},
+        {name: "I", position: "T", ringSetting: "B"},
     ],
-    reflector: DEFAULT_REFLECTOR
+    reflector: "UKB_B"
 });
 
-Object.values(enigma.rotors).forEach(rotor => {
-    //console.table(rotor.details.ring);
-});
-
-let result = enigma.encryptMessage("test");
+let result = enigma.encryptMessage("testingtestingtestingtesting");
 console.log(EnigmaMachine.formatOutput(result));
-
-//enigma.rotors.r1.rotate(1);
-//enigma.rotors.r1.setStartPosition("G");
-//console.log(enigma.encrypt("A"));
-
-//console.table(enigma.reflector.details);
-//console.log(enigma.reflector.reflect(0));
-
-///console.log(enigma.rotors.r1.details);
-//console.log(enigma.rotors.r3.forward(0));
-//console.log(enigma.rotors.r1.forward(0));

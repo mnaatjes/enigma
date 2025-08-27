@@ -1,5 +1,6 @@
 import { ALPHABET } from "../../constants.js";
 
+/**-------------------------------------------------------------------------*/
 /**
  * @file src/components/Plugboard.js
  * 
@@ -19,10 +20,53 @@ export class Plugboard {
      */
      static FIXED = [...ALPHABET];
 
+     /**
+      * Details
+      * @type {object} details
+      */
+     details = {};
+
+     /**-------------------------------------------------------------------------*/
     /**
      * Constructor
+     * 
+     * @param {object} pairs - Key: Value pairs of letters to swap
      */
     constructor(pairs){
+        // Configure / Update
+        this.update(pairs);
+    }
+
+    /**-------------------------------------------------------------------------*/
+    /**
+     * Forward
+     */
+    forward(signal){
+        // Find character from signal int
+        const letter = Plugboard.FIXED[signal];
+
+        // Encode using plugboard swapped keys
+        return this.left.indexOf(letter);
+    }
+
+    /**-------------------------------------------------------------------------*/
+    /**
+     * Backward
+     */
+    backward(signal){
+        // Find character from signal int
+        const letter = this.left[signal];
+
+        // Encode using plugboard swapped keys
+        return Plugboard.FIXED.indexOf(letter);
+    }
+
+    /**-------------------------------------------------------------------------*/
+    /**
+     * Update
+     * @param {object} pairs
+     */
+    update(pairs){
         // Loop pairings
         for(const key in pairs){
             // Define Right
@@ -36,27 +80,11 @@ export class Plugboard {
             this.left[keyIndex]     = value;
             this.left[valueIndex]   = key;
         }
-    }
 
-    /**
-     * Forward
-     */
-    forward(signal){
-        // Find character from signal int
-        const letter = Plugboard.FIXED[signal];
-
-        // Encode using plugboard swapped keys
-        return this.left.indexOf(letter);
-    }
-
-    /**
-     * Backward
-     */
-    backward(signal){
-        // Find character from signal int
-        const letter = this.left[signal];
-
-        // Encode using plugboard swapped keys
-        return Plugboard.FIXED.indexOf(letter);
+        // Update details
+        this.details = {
+            left: this.left.join(" "),
+            right: Plugboard.FIXED.join(" ")
+        };
     }
 }

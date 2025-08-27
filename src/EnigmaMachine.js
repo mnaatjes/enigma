@@ -20,6 +20,7 @@ import { Plugboard } from "./components/Plugboard.js";
 import { Rotor } from "./components/Rotor.js";
 import { Reflector } from "./components/Reflector.js";
 
+/**-------------------------------------------------------------------------*/
 /**
  * EnigmaMachine
  * 
@@ -32,6 +33,8 @@ import { Reflector } from "./components/Reflector.js";
  * 
  */
 export class EnigmaMachine {
+
+    /**-------------------------------------------------------------------------*/
     /**
      * Constructor
      * @param {EnigmaConfiguration} config - Configuration for entire machine
@@ -52,6 +55,7 @@ export class EnigmaMachine {
         this.reflector = new Reflector(config.reflector);
     }   
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Encrypt
      * @param {string} inputChar
@@ -79,6 +83,7 @@ export class EnigmaMachine {
                 output: undefined
             }
         }
+
         /**
          * Encryption Flow:
          */
@@ -153,25 +158,23 @@ export class EnigmaMachine {
         encryption.backward.keyboard = output;
         encryption.backward.output = output;
 
-        // Output
-        console.table(encryption);
-
         // TODO: Update Machine State/Settings
 
         // Return output
         return output;
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Encrypt message
      * @param {string} message - List of characters to encrypt
      */
     encryptMessage(message){
         /**
-         * @type {array} Trim | Explode | Translate to uppercase
+         * @type {array} Remove Whitespace | Explode | Translate to uppercase
          */
-        const letters = message.trim().split("").map(letter => letter.toUpperCase());
-
+        message         = message.replace(/\s/g, '');
+        const letters   = message.split("").map(letter => letter.toUpperCase());
         /**
          * @type {array} - Collector
          */
@@ -189,6 +192,7 @@ export class EnigmaMachine {
         return acc;
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Format output message
      * @param {array} arr
@@ -207,8 +211,13 @@ export class EnigmaMachine {
         return output;
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
-     * Update / Change Enigma Settings / State
-     * TODO:
+     * Run a test
      */
+    runTest(){
+        let result = this.encryptMessage("TESTING TESTING TESTING TESTING TESTING TESTING");
+
+        console.log(EnigmaMachine.formatOutput(result));
+    }   
 }

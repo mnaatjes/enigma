@@ -44,9 +44,7 @@ export class Rotor {
      * @property {string} state.name - The name of the rotor (e.g., "I", "II", "III").
      * @property {string} state.ringPosition - The position of the rotor's alphabet ring (e.g. "A")
      * @property {string} state.ringSetting - The ring setting (Ringstellung) of the rotor (e.g. "B")
-     * @property {int} state.offset - Numeric offset from initial position relative to Fixed alphabet (e.g. n=1 rotation === offset of 1)
-     * TODO Lead Character
-     * TODO INT Value
+     * @property {number} state.offset - Numeric offset from initial position relative to Fixed alphabet (e.g. n=1 rotation === offset of 1)
      */
     state = {};
 
@@ -78,39 +76,18 @@ export class Rotor {
      */
     notch;
 
-    /**
-     * Offset created by the ring setting (Ringstellung) or rotation of the alphabet ring
-     * - Default = 0
-     * - Shifts the wiring array
-     */
-    offset;
-
+    /**-------------------------------------------------------------------------*/
     /**
      * Constructor
+     * 
+     * @param {object} rotor_configuration
      */
     constructor(rotor_configuration){
-        // Define Init Configuration
-        this.configuration = rotor_configuration;
-
-        // Define wiring & notch
-        this.wiring = [...ROTOR_CONFIGURATIONS[this.configuration.name].wiring];
-        this.notch  = ROTOR_CONFIGURATIONS[this.configuration.name].notch;
-
-        // Set state variables
-        this.state.name = rotor_configuration.name
-
-        // Assign Details
-        this.details = {
-            name: this.state.name,
-            ring: this.alphabetRing.join(" "),
-            wiring: this.wiring.join(" "),
-            notch: this.notch
-        };
-
-        // Rotate to start position
-        this.setStartPosition(this.configuration.position);
+        // Configure and Update
+        this.update(rotor_configuration);
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Rotate the rotor by n positions
      * 
@@ -163,14 +140,30 @@ export class Rotor {
         this.details.wiring = this.wiring.join(" ")
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Set Rotor Setting (Ringsellung)
      * - Creates the offset integer
      * - Moves the Alphabet Ring relative to the wiring assembly
      * - Uses dotPosition of character in wiring array
      */
-    setRingSetting(){}
+    setRingSetting(letter="A"){
+        // Convert letter to index
+        const n = Rotor.FIXED.indexOf(letter);
 
+
+        // Rotate rotor backwards
+        this.rotate(n, false);
+
+        // Adjust turnover notch in relationship to the wiring
+        const notchIndex = Rotor.FIXED.indexOf(this.notch);
+        this.notch = Rotor.FIXED[(notchIndex - n) % 26];
+
+        // Update state offset
+        this.state.offset = n;
+    }
+
+    /**-------------------------------------------------------------------------*/
     /**
      * Set Starting position:
      * - This is the character that is visible in the window
@@ -187,6 +180,7 @@ export class Rotor {
         this.rotate(n);
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Forward
      * 
@@ -201,6 +195,7 @@ export class Rotor {
         return this.alphabetRing.indexOf(letter);
     }
 
+    /**-------------------------------------------------------------------------*/
     /**
      * Backward
      * 
@@ -213,5 +208,37 @@ export class Rotor {
 
         // Encode using plugboard swapped keys
         return this.wiring.indexOf(letter);
+    }
+
+    /**-------------------------------------------------------------------------*/
+    /**
+     * Update Configuration
+     * 
+     * @param {object} config
+     */
+    update(config){
+        // Define Init Configuration
+        this.configuration = config;
+
+        // Define wiring & notch
+        this.wiring = [...ROTOR_CONFIGURATIONS[this.configuration.name].wiring];
+        this.notch  = ROTOR_CONFIGURATIONS[this.configuration.name].notch;
+
+        // Set state variables
+        this.state.name = config.name
+
+        // Rotate to start position
+        this.setStartPosition(this.configuration.position);
+
+        // Set Ring Setting
+        this.setRingSetting(this.configuration.ringSetting);
+
+        // Assign Details
+        this.details = {
+            name: this.state.name,
+            ring: this.alphabetRing.join(" "),
+            wiring: this.wiring.join(" "),
+            notch: this.notch
+        };
     }
 }

@@ -1,5 +1,5 @@
 import { ALPHABET, REFLECTOR_CONFIGURATIONS } from "../../constants.js";
-
+/**-------------------------------------------------------------------------*/
 /**
  * @file src/components/Reflector.js
  * 
@@ -18,18 +18,33 @@ export class Reflector {
      */
     static FIXED = [...ALPHABET];
 
-    /**
-     * Debugging Details
-     * @type {object} details
-     */
-    details = {};
-
+    /**-------------------------------------------------------------------------*/
     /**
      * Constructor
      * 
      * @param {string} reflector_name
      */
     constructor(reflector_name){
+        // Configure and Update
+        this.update(reflector_name);
+    }
+
+    /**-------------------------------------------------------------------------*/
+    /**
+     * reflect
+     * @param {number} signal
+     */
+    reflect(signal){
+        let letter = this.wiring[signal];
+        return Reflector.FIXED.indexOf(letter);
+    }
+
+    /**-------------------------------------------------------------------------*/
+    /**
+     * Update
+     * @param {string} reflector_name
+     */
+    update(reflector_name){
         // Define Properties
         this.name   = reflector_name;
         this.wiring = [...REFLECTOR_CONFIGURATIONS[reflector_name]];
@@ -39,14 +54,5 @@ export class Reflector {
             name: this.name,
             wiring: this.wiring.join(" ")
         };
-    }
-
-    /**
-     * reflect
-     * @param {number} signal
-     */
-    reflect(signal){
-        let letter = this.wiring[signal];
-        return Reflector.FIXED.indexOf(letter);
     }
 }
