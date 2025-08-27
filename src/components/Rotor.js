@@ -29,6 +29,16 @@ export class Rotor {
     configuration = {};
 
     /**
+     * Details for debugging
+     * @type {object} details
+     * @property {string} details.name - Rotor name, e.g. I
+     * @property {string} details.ring - Alphabet Ring array as joined string
+     * @property {string} details.wiring - Rotor wiring array as joined string
+     * @property {string} details.notch - Character default notch, e.g. "Q"
+     */
+    details = {};
+
+    /**
      * The active configuration and state of the rotor and its properties
      * @type {object}
      * @property {string} state.name - The name of the rotor (e.g., "I", "II", "III").
@@ -44,13 +54,13 @@ export class Rotor {
      * Alphabet Ring Array for rotor a.k.a Left Side
      * @type {array}
      */
-    alphabetRing = ALPHABET;
+    alphabetRing = [...ALPHABET];
 
     /**
      * Fixed reference alphabet for indexes A-Z in order with index 0 always == "A"
      * @type {array}
      */
-    static FIXED = ALPHABET;
+    static FIXED = [...ALPHABET];
 
     /**
      * Wiring Array for cypther a.k.a Right side
@@ -60,9 +70,7 @@ export class Rotor {
 
     /**
      * Notch associated with initial wiring diagram - prior to any changes
-     * @type {object} notch
-     * @property {string} notch.char - Character present at notch which changes based on offset
-     * @property {int} notch.index - Fixed alphabet based index of notch character
+     * @type {string} notch
      * @example "Q" for ROTOR I
      */
     notch;
@@ -77,7 +85,25 @@ export class Rotor {
     /**
      * Constructor
      */
-    constructor(rotor_configuration){}
+    constructor(rotor_configuration){
+        // Define Init Configuration
+        this.configuration = rotor_configuration;
+
+        // Define wiring & notch
+        this.wiring = [...ROTOR_CONFIGURATIONS[this.configuration.name].wiring];
+        this.notch  = ROTOR_CONFIGURATIONS[this.configuration.name].notch;
+
+        // Set state variables
+        this.state.name = rotor_configuration.name
+
+        // Assign Details
+        this.details = {
+            name: this.state.name,
+            ring: this.alphabetRing.join(" "),
+            wiring: this.wiring.join(" "),
+            notch: this.notch
+        };
+    }
 
     /**
      * Rotate the rotor by n positions

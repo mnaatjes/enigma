@@ -1,3 +1,6 @@
+import { ALPHABET } from "../../constants.js";
+import { Rotor } from "./Rotor.js";
+
 /**
  * @file src/components/Keyboard.js
  * 
@@ -13,11 +16,22 @@ export class Keyboard {
 
     /**
      * Forward
+     * 
+     * @param {string} letter
      */
-    forward(){}
+    forward(letter){
+        // Convert to Signal
+        let signal = ALPHABET.indexOf(letter);
+        return signal;
+    }
 
     /**
      * Backward
+     * 
+     * @param {int} signal
      */
-    backward(){}
+    backward(signal){
+        // Convert to letter
+        return ALPHABET[signal];
+    }
 }
