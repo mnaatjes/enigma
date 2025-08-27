@@ -20,13 +20,10 @@ import { DEFAULT_PLUGBOARD_SETTINGS, DEFAULT_REFLECTOR, DEFAULT_ROTOR_SETTINGS }
  * @description Import Enigma Component Classes
  */
 import { Rotor } from "../src/components/Rotor.js";
+import { Keyboard } from "../src/components/Keyboard.js";
+import { Plugboard } from "../src/components/Plugboard.js";
+import { Reflector } from "../src/components/Reflector.js";
 
-// Debugging
-const r1 = new Rotor(DEFAULT_ROTOR_SETTINGS[0]);
-r1.setStartPosition("Z");
-r1.setRingSetting("B");
-let value = r1.forward("A");
-console.log(r1.alphabetRing.join(" "));
-console.log(r1.wiring.join(" "));
-console.log(r1.offset);
-console.log(value);
+/**
+ * Debugging
+ */

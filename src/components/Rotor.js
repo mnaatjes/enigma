@@ -8,7 +8,10 @@ import { ALPHABET, ROTOR_CONFIGURATIONS } from "../../constants.js";
  * @since 2.0.0: 
  * - Restructured
  * 
- * @version 2.0.0
+ * @since 2.1.0:
+ * - Coding Cassowary Implementation
+ * 
+ * @version 2.1.0
  * 
  * @param {object} rotor_configuration - The configuration object for a single rotor.
  * @param {string} rotor_configuration.name - The name of the rotor (e.g., "I", "II", "III").
@@ -62,29 +65,19 @@ export class Rotor {
      * @property {int} notch.index - Fixed alphabet based index of notch character
      * @example "Q" for ROTOR I
      */
-    notch = {};
+    notch;
 
     /**
      * Offset created by the ring setting (Ringstellung) or rotation of the alphabet ring
      * - Default = 0
      * - Shifts the wiring array
      */
-    offset = {rotation: 0, ring: 0};
+    offset;
 
     /**
      * Constructor
      */
-    constructor(rotor_configuration){
-        // Assign Initial Configuration
-        this.configuration = rotor_configuration;
-        
-        // Set initial wiring and notch properties
-        this.wiring = ROTOR_CONFIGURATIONS[this.configuration.name].wiring;
-        this.notch  = {
-            char: ROTOR_CONFIGURATIONS[this.configuration.name].notch,
-            index: Rotor.FIXED.indexOf(ROTOR_CONFIGURATIONS[this.configuration.name].notch)
-        };
-    }
+    constructor(rotor_configuration){}
 
     /**
      * Rotate the rotor by n positions
@@ -93,88 +86,15 @@ export class Rotor {
      * @param {boolean} forward Direction in which to rotate. Default is forward
      * @returns {void}
      */
-    rotate(n=1, forward=true){
-        // Copy alphabet ring
-        const copyAlphabetRing = [...this.alphabetRing];
-
-        // Copy wiring array
-        const copyWiring = [...this.wiring];
-
-        // Determine direction of rotation
-        if(forward === true){
-            // Rotate Forwards
-            for(let i = 0; i < n; i++){
-                /**
-                 * Rotate alphabetRing Copy:
-                 * - shift first character off array
-                 * - prepend shifted character onto array
-                 */
-                const shiftedCharAlphabet = copyAlphabetRing.shift();
-                copyAlphabetRing.push(shiftedCharAlphabet);
-
-                /**
-                 * Rotate wiring copy:
-                 * - shift off first char
-                 * - prepent to array
-                 */
-                const shiftedCharWiring = copyWiring.shift();
-                copyWiring.push(shiftedCharWiring);
-
-            }
-        } else {
-            // Rotate Backwards
-            for(let i = 25; i >= n; i--){
-                /**
-                 * Rotate alphabetRing Copy:
-                 * - shift first character off array
-                 * - prepend shifted character onto array
-                 */
-                const shiftedCharAlphabet = copyAlphabetRing.shift();
-                copyAlphabetRing.push(shiftedCharAlphabet);
-
-                /**
-                 * Rotate wiring copy:
-                 * - shift off first char
-                 * - prepent to array
-                 */
-                const shiftedCharWiring = copyWiring.shift();
-                copyWiring.push(shiftedCharWiring);
-            }
-        }
-        // Assign rotor properties from rotated copies
-        this.alphabetRing   = copyAlphabetRing;
-        this.wiring         = copyWiring;
-
-        // Update State properties
-        // Assign offset integer
-        this.offset.rotation = (forward === true) ?
-            n % ALPHABET.length :
-            (n % ALPHABET.length) * -1;
-        
-        // Assign new notch character
-        this.notch.char = Rotor.FIXED[this.notch.index - this.state.offset];
-    }
+    rotate(n=1, forward=true){}
 
     /**
      * Set Rotor Setting (Ringsellung)
      * - Creates the offset integer
      * - Moves the Alphabet Ring relative to the wiring assembly
      * - Uses dotPosition of character in wiring array
-     * 
-     * @param {string} character
      */
-    setRingSetting(character="A"){
-        // Calculate offset
-        this.offset.ring = Rotor.FIXED.indexOf(character);
-
-        // Shift alphabet ring
-        const shiftedRing = [...this.alphabetRing];
-        for(let i=0; i < this.offset.ring; i++){
-            const char = shiftedRing.pop();
-            shiftedRing.unshift(char);
-        }
-        // Assign to alphabet ring
-        this.alphabetRing = shiftedRing;
+    setRingSetting(){
     }
 
     /**
@@ -182,19 +102,15 @@ export class Rotor {
      * - This is the character that is visible in the window
      * - This moves the entire assembly (alphabet ring and wiring) together
      */
-    setStartPosition(character="A"){
-        // Calculate rotations
-        const targetIndex = Rotor.FIXED.indexOf(character);
-        // Rotate
-        this.rotate(targetIndex);
-    }
+    setStartPosition(){}
 
     /**
      * Forward
      */
-    forward(character="A"){
-        // Define signal
-        let signal = this.alphabetRing.indexOf(character);
-        return this.wiring[signal];
-    }
+    forward(){}
+
+    /**
+     * Backward
+     */
+    backward(){}
 }
