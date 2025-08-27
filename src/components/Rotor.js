@@ -51,18 +51,21 @@ export class Rotor {
     state = {};
 
     /**
+     * Left
      * Alphabet Ring Array for rotor a.k.a Left Side
      * @type {array}
      */
     alphabetRing = [...ALPHABET];
 
     /**
+     * Left
      * Fixed reference alphabet for indexes A-Z in order with index 0 always == "A"
      * @type {array}
      */
     static FIXED = [...ALPHABET];
 
     /**
+     * Right
      * Wiring Array for cypther a.k.a Right side
      * @type {array} wiring
      */
@@ -108,7 +111,7 @@ export class Rotor {
     /**
      * Rotate the rotor by n positions
      * 
-     * @param {int} n Number of positions to advance or turn. Default = 1
+     * @param {number} n Number of positions to advance or turn. Default = 1
      * @param {boolean} forward Direction in which to rotate. Default is forward
      * @returns {void}
      */
@@ -120,8 +123,7 @@ export class Rotor {
      * - Moves the Alphabet Ring relative to the wiring assembly
      * - Uses dotPosition of character in wiring array
      */
-    setRingSetting(){
-    }
+    setRingSetting(){}
 
     /**
      * Set Starting position:
@@ -133,10 +135,22 @@ export class Rotor {
     /**
      * Forward
      */
-    forward(){}
+    forward(signal){
+        // Find character from signal int
+        const letter = this.wiring[signal];
+
+        // Encode using plugboard swapped keys
+        return this.alphabetRing.indexOf(letter);
+    }
 
     /**
      * Backward
      */
-    backward(){}
+    backward(signal){
+        // Find character from signal int
+        const letter = this.alphabetRing[signal];
+
+        // Encode using plugboard swapped keys
+        return this.wiring.indexOf(letter);
+    }
 }

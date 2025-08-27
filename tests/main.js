@@ -35,7 +35,15 @@ import { EnigmaMachine } from "../src/EnigmaMachine.js";
 //console.log(DEFAULT_PLUGBOARD_SETTINGS);
 
 const enigma = new EnigmaMachine({
-    plugboard: {A: "B", C: "H"},
+    plugboard: {A: "R", G: "K", O: "X"},
     rotors: DEFAULT_ROTOR_SETTINGS,
     reflector: DEFAULT_REFLECTOR
 });
+
+console.log(enigma.encrypt("A"));
+//console.table(enigma.reflector.details);
+//console.log(enigma.reflector.reflect(0));
+
+///console.log(enigma.rotors.r1.details);
+//console.log(enigma.rotors.r3.forward(0));
+//console.log(enigma.rotors.r1.forward(0));
