@@ -163,6 +163,51 @@ export class EnigmaMachine {
     }
 
     /**
+     * Encrypt message
+     * @param {string} message - List of characters to encrypt
+     */
+    encryptMessage(message){
+        /**
+         * @type {array} Trim | Explode | Translate to uppercase
+         */
+        const letters = message.trim().split("").map(letter => letter.toUpperCase());
+
+        /**
+         * @type {array} - Collector
+         */
+        const acc = [];
+        // Loop and Encrypt
+        letters.forEach(inputChar => {
+            /**
+             * @type {string} - Output character from encryption
+             */
+            const outputChar = this.encrypt(inputChar);
+            acc.push(outputChar);
+        });
+
+        // return output array
+        return acc;
+    }
+
+    /**
+     * Format output message
+     * @param {array} arr
+     * @returns {string} - Formatted output string with a space every 5 spaces
+     */
+    static formatOutput(arr){
+        // Handle Output
+        let output = "";
+        for(let i = 0; i < arr.length; i++){
+            output += arr[i];
+            // Add 5th space
+            if((i+1) % 5 === 0 && (i+1) !== arr.length){
+                output += " ";
+            }
+        }
+        return output;
+    }
+
+    /**
      * Update / Change Enigma Settings / State
      * TODO:
      */

@@ -45,8 +45,12 @@ const enigma = new EnigmaMachine({
 });
 
 Object.values(enigma.rotors).forEach(rotor => {
-    console.table(rotor.details.ring);
+    //console.table(rotor.details.ring);
 });
+
+let result = enigma.encryptMessage("test");
+console.log(EnigmaMachine.formatOutput(result));
+
 //enigma.rotors.r1.rotate(1);
 //enigma.rotors.r1.setStartPosition("G");
 //console.log(enigma.encrypt("A"));
