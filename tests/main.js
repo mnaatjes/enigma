@@ -23,4 +23,6 @@ import { Rotor } from "../src/components/Rotor.js";
 
 // Debugging
 const r1 = new Rotor(DEFAULT_ROTOR_SETTINGS[0]);
-r1.setRingSetting("C");
+r1.setRingSetting("B");
+r1.setStartPosition("C");
+r1.forward("A");

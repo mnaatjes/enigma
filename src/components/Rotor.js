@@ -167,45 +167,11 @@ export class Rotor {
      * Set Rotor Setting (Ringsellung)
      * - Creates the offset integer
      * - Moves the Alphabet Ring relative to the wiring assembly
-     * - Uses dotPosition of character in wiring array
      * 
      * @param {string} character
      */
     setRingSetting(character="A"){
-        // TODO: Validate Character
-        character = character.toUpperCase();
-
-        // Convert character to offset integer
         this.offset = Rotor.FIXED.indexOf(character);
-
-        let output = [...this.alphabetRing];
-
-        // Index of character at wiring
-        let dotIndex        = this.wiring.indexOf("A") + this.offset;
-        let shiftedWiring   = [...this.wiring];
-
-        // Shift Wiring array characters by offset
-        for(let i=0; i < this.offset; i++){
-            shiftedWiring = shiftedWiring.map((letter) => {
-                let index = Rotor.FIXED.indexOf(letter) + 1;
-                return Rotor.FIXED[index];
-            });
-        }
-        
-        // Rotate Wiring Array
-        for(let i=0; i < this.offset; i++){
-            const poppedChar = shiftedWiring.pop();
-            shiftedWiring.unshift(poppedChar);
-        }
-
-        // Debugging
-        console.log("Offset:    ", this.offset);
-        console.log("Dot Index: ", dotIndex);
-        console.log("Input:     ", this.alphabetRing.join(" "));
-        console.log("Init Wire: ", this.wiring.join(" "));
-        //console.log("Output:    ", output.join(" "));
-        console.log("Shift Wire:", shiftedWiring.join(" "));
-        console.log("POS of " + character + ":  ", shiftedWiring.indexOf(character));
     }
 
     /**
@@ -213,5 +179,42 @@ export class Rotor {
      * - This is the character that is visible in the window
      * - This moves the entire assembly (alphabet ring and wiring) together
      */
-    setStartPosition(character="A"){}
+    setStartPosition(character="A"){
+        this.startPos = Rotor.FIXED.indexOf(character);
+    }
+
+    /**
+     * Test
+     * 
+     */
+    forward(character="A"){
+        // Define Signal
+        let signal = Rotor.FIXED.indexOf(character);
+        
+        // Shift signal by Start Position
+        signal = (signal + this.startPos) % 26;
+
+        // Debugging
+        console.log("Offset:       ", this.offset);
+        console.log("Start POS:    ", this.startPos);
+        console.log("Signal + POS: ", signal);
+        
+        // Apply ring setting to signal
+        signal = (signal + this.offset) % 26;
+        console.log("Signal + Ring:", signal);
+        
+        // Pass through wiring
+        let cypher = this.wiring[signal];
+        console.log("Cypher Char:  ", cypher);
+
+        // Remove Ring Setting
+        let cypherSignal = Rotor.FIXED.indexOf(cypher);
+        cypherSignal     = (cypherSignal - this.offset) % 26;
+        console.log("Cypher - Ring:", cypherSignal);
+
+        // Remove Start Position
+        cypherSignal = (cypherSignal - this.startPos) % 26;
+        console.log("Cypher - POS: ", cypherSignal);
+        console.log("Output Char:  ", Rotor.FIXED[cypherSignal]);
+    }
 }
