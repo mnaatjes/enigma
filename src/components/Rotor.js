@@ -106,6 +106,9 @@ export class Rotor {
             wiring: this.wiring.join(" "),
             notch: this.notch
         };
+
+        // Rotate to start position
+        this.setStartPosition(this.configuration.position);
     }
 
     /**
@@ -115,7 +118,50 @@ export class Rotor {
      * @param {boolean} forward Direction in which to rotate. Default is forward
      * @returns {void}
      */
-    rotate(n=1, forward=true){}
+    rotate(n=1, forward=true){
+        // Copy Alphabet Ring and Wiring Arrays
+        const copyAlphabetRing  = [...this.alphabetRing];
+        const copyWiring        = [...this.wiring];
+
+        /**
+         * Determine direction of Rotation
+         */
+        if(forward === false){
+            // Reverse Rotation
+            for(let i=0; i < n; i++){
+                // Pop from end
+                const poppedAlphabet = copyAlphabetRing.pop();
+                const poppedWiring   = copyWiring.pop();
+
+                // Unshift
+                copyAlphabetRing.unshift(poppedAlphabet);
+                copyWiring.unshift(poppedWiring);
+            }
+        } else if(forward === true){
+            // Forward Rotation
+            for(let i=0; i < n; i++){
+                // Pop from end
+                const shiftedAlphabet = copyAlphabetRing.shift();
+                const shiftedWiring   = copyWiring.shift();
+
+                // Unshift
+                copyAlphabetRing.push(shiftedAlphabet);
+                copyWiring.push(shiftedWiring);
+            }
+        }
+
+        // Set values
+        this.alphabetRing   = copyAlphabetRing;
+        this.wiring         = copyWiring;
+
+        // Store state properties
+        this.state.ringPosition = this.alphabetRing[0];
+        this.state.rotations    = (this.state.rotations === undefined) ? n : this.state.rotations + n;
+
+        // Update details
+        this.details.ring   = this.alphabetRing.join(" ");
+        this.details.wiring = this.wiring.join(" ")
+    }
 
     /**
      * Set Rotor Setting (Ringsellung)
@@ -129,11 +175,23 @@ export class Rotor {
      * Set Starting position:
      * - This is the character that is visible in the window
      * - This moves the entire assembly (alphabet ring and wiring) together
+     * 
+     * @param {string} letter - Character to set in the window as the start position; Default "A"
+     * @returns {void} - Rotates this.aphabetRing to input letter with this.wiring as one unit
      */
-    setStartPosition(){}
+    setStartPosition(letter="A"){
+        /**
+         * @const {number} n - number of rotations needed to arrive at letter
+         */
+        const n = Rotor.FIXED.indexOf(letter);
+        this.rotate(n);
+    }
 
     /**
      * Forward
+     * 
+     * @param {number} signal - Index value of the input character
+     * @returns {number} - Index value of the output character
      */
     forward(signal){
         // Find character from signal int
@@ -145,6 +203,9 @@ export class Rotor {
 
     /**
      * Backward
+     * 
+     * @param {number} signal - Index value of the input character
+     * @returns {number} - Index value of the output character
      */
     backward(signal){
         // Find character from signal int

@@ -36,11 +36,21 @@ import { EnigmaMachine } from "../src/EnigmaMachine.js";
 
 const enigma = new EnigmaMachine({
     plugboard: {A: "R", G: "K", O: "X"},
-    rotors: DEFAULT_ROTOR_SETTINGS,
+    rotors: [
+        {name: "I", position: "D", ringSetting: "A"},
+        {name: "II", position: "O", ringSetting: "A"},
+        {name: "III", position: "G", ringSetting: "A"},
+    ],
     reflector: DEFAULT_REFLECTOR
 });
 
-console.log(enigma.encrypt("A"));
+Object.values(enigma.rotors).forEach(rotor => {
+    console.table(rotor.details.ring);
+});
+//enigma.rotors.r1.rotate(1);
+//enigma.rotors.r1.setStartPosition("G");
+//console.log(enigma.encrypt("A"));
+
 //console.table(enigma.reflector.details);
 //console.log(enigma.reflector.reflect(0));
 

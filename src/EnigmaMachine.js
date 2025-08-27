@@ -50,7 +50,7 @@ export class EnigmaMachine {
             r3: new Rotor(config.rotors[2]),
         };
         this.reflector = new Reflector(config.reflector);
-    }
+    }   
 
     /**
      * Encrypt
@@ -81,8 +81,6 @@ export class EnigmaMachine {
         }
         /**
          * Encryption Flow:
-         * - Convert to Signal via Keyboard
-         * - Plugboard
          */
         encryption.forward.input = inputChar;
         
@@ -93,6 +91,30 @@ export class EnigmaMachine {
         // Plugboard encryption
         signal = this.plugboard.forward(signal);
         encryption.forward.plugboard = signal;
+
+        // Rotate Rotors
+        if(this.rotors.r2.state.ringPosition === this.rotors.r2 && this.rotors.r3.state.ringPosition === this.rotors.r3.notch){
+            // All 3 Rotors Rotate
+            this.rotors.r1.rotate();
+            this.rotors.r2.rotate();
+            this.rotors.r3.rotate();
+
+        } else if(this.rotors.r3.state.ringPosition === this.rotors.r3.notch){
+            // Rotate Rotor 2 and 3
+            this.rotors.r2.rotate();
+            this.rotors.r3.rotate();
+
+        } else if(this.rotors.r2.state.ringPosition === this.rotors.r2.notch){
+            // Double-step anomaly
+            this.rotors.r1.rotate();
+            this.rotors.r2.rotate();
+            this.rotors.r3.rotate();
+
+        } else {
+            // Rotate third rotor every keypress
+            this.rotors.r3.rotate();
+
+        }
 
         // Rotor 1
         signal = this.rotors.r3.forward(signal);
@@ -132,8 +154,16 @@ export class EnigmaMachine {
         encryption.backward.output = output;
 
         // Output
-
         console.table(encryption);
-        
+
+        // TODO: Update Machine State/Settings
+
+        // Return output
+        return output;
     }
+
+    /**
+     * Update / Change Enigma Settings / State
+     * TODO:
+     */
 }
