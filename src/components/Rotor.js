@@ -31,18 +31,23 @@ export class Rotor {
      * @property {string} state.name - The name of the rotor (e.g., "I", "II", "III").
      * @property {string} state.ringPosition - The position of the rotor's alphabet ring (e.g. "A")
      * @property {string} state.ringSetting - The ring setting (Ringstellung) of the rotor (e.g. "B")
-     * @property {int} state.offset - Numeric offset from initial position; index 0 = "A"
-     * @property {string} state.notch - The current notch position (e.g.)
+     * @property {int} state.offset - Numeric offset from initial position relative to Fixed alphabet (e.g. n=1 rotation === offset of 1)
      * TODO Lead Character
      * TODO INT Value
      */
     state = {};
 
     /**
-     * Fixed Alphabet Array for rotor a.k.a Left Side
-     * @type {array} fixed
+     * Alphabet Ring Array for rotor a.k.a Left Side
+     * @type {array}
      */
     alphabetRing = ALPHABET;
+
+    /**
+     * Fixed reference alphabet for indexes A-Z in order with index 0 always == "A"
+     * @type {array}
+     */
+    static FIXED = ALPHABET;
 
     /**
      * Wiring Array for cypther a.k.a Right side
@@ -52,10 +57,19 @@ export class Rotor {
 
     /**
      * Notch associated with initial wiring diagram - prior to any changes
-     * @type {string} notch
+     * @type {object} notch
+     * @property {string} notch.char - Character present at notch which changes based on offset
+     * @property {int} notch.index - Fixed alphabet based index of notch character
      * @example "Q" for ROTOR I
      */
-    notch = "";
+    notch = {};
+
+    /**
+     * Offset created by the ring setting (Ringstellung) or rotation of the alphabet ring
+     * - Default = 0
+     * - Shifts the wiring array
+     */
+    offset = 0;
 
     /**
      * Constructor
@@ -66,7 +80,10 @@ export class Rotor {
         
         // Set initial wiring and notch properties
         this.wiring = ROTOR_CONFIGURATIONS[this.configuration.name].wiring;
-        this.notch  = ROTOR_CONFIGURATIONS[this.configuration.name].notch;
+        this.notch  = {
+            char: ROTOR_CONFIGURATIONS[this.configuration.name].notch,
+            index: Rotor.FIXED.indexOf(ROTOR_CONFIGURATIONS[this.configuration.name].notch)
+        };
     }
 
     /**
@@ -129,12 +146,72 @@ export class Rotor {
         this.wiring         = copyWiring;
 
         // Update State properties
-        this.state.offset = (forward === true) ? 
-            (n +  ALPHABET.indexOf(this.alphabetRing[0])) % ALPHABET.length : 
-            ((ALPHABET.indexOf(this.alphabetRing[0]) - n) % ALPHABET.length + ALPHABET.length) % ALPHABET.length;
-        console.log(copyAlphabetRing.join(" "));
-        console.log(copyWiring.join(" "));
+        // Assign offset integer
+        this.state.offset = (forward === true) ?
+            n % ALPHABET.length :
+            (n % ALPHABET.length) * -1;
+        
+        // Assign new notch character
+        this.notch.char = Rotor.FIXED[this.notch.index - this.state.offset];
+
+        // Debugging
+        console.log(Rotor.FIXED.join(" "));
+        console.log(this.alphabetRing.join(" "));
+        console.log(this.wiring.join(" "));
         console.log(this.state);
-        console.log(ALPHABET.indexOf(this.alphabetRing[0]));
+        console.log(this.notch);
+        
     }
+
+    /**
+     * Set Rotor Setting (Ringsellung)
+     * - Creates the offset integer
+     * - Moves the Alphabet Ring relative to the wiring assembly
+     * - Uses dotPosition of character in wiring array
+     * 
+     * @param {string} character
+     */
+    setRingSetting(character="A"){
+        // TODO: Validate Character
+        character = character.toUpperCase();
+
+        // Convert character to offset integer
+        this.offset = Rotor.FIXED.indexOf(character);
+
+        let output = [...this.alphabetRing];
+
+        // Index of character at wiring
+        let dotIndex        = this.wiring.indexOf("A") + this.offset;
+        let shiftedWiring   = [...this.wiring];
+
+        // Shift Wiring array characters by offset
+        for(let i=0; i < this.offset; i++){
+            shiftedWiring = shiftedWiring.map((letter) => {
+                let index = Rotor.FIXED.indexOf(letter) + 1;
+                return Rotor.FIXED[index];
+            });
+        }
+        
+        // Rotate Wiring Array
+        for(let i=0; i < this.offset; i++){
+            const poppedChar = shiftedWiring.pop();
+            shiftedWiring.unshift(poppedChar);
+        }
+
+        // Debugging
+        console.log("Offset:    ", this.offset);
+        console.log("Dot Index: ", dotIndex);
+        console.log("Input:     ", this.alphabetRing.join(" "));
+        console.log("Init Wire: ", this.wiring.join(" "));
+        //console.log("Output:    ", output.join(" "));
+        console.log("Shift Wire:", shiftedWiring.join(" "));
+        console.log("POS of " + character + ":  ", shiftedWiring.indexOf(character));
+    }
+
+    /**
+     * Set Starting position:
+     * - This is the character that is visible in the window
+     * - This moves the entire assembly (alphabet ring and wiring) together
+     */
+    setStartPosition(character="A"){}
 }
