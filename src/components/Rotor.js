@@ -69,7 +69,7 @@ export class Rotor {
      * - Default = 0
      * - Shifts the wiring array
      */
-    offset = 0;
+    offset = {rotation: 0, ring: 0};
 
     /**
      * Constructor
@@ -147,20 +147,12 @@ export class Rotor {
 
         // Update State properties
         // Assign offset integer
-        this.state.offset = (forward === true) ?
+        this.offset.rotation = (forward === true) ?
             n % ALPHABET.length :
             (n % ALPHABET.length) * -1;
         
         // Assign new notch character
         this.notch.char = Rotor.FIXED[this.notch.index - this.state.offset];
-
-        // Debugging
-        console.log(Rotor.FIXED.join(" "));
-        console.log(this.alphabetRing.join(" "));
-        console.log(this.wiring.join(" "));
-        console.log(this.state);
-        console.log(this.notch);
-        
     }
 
     /**
@@ -172,40 +164,17 @@ export class Rotor {
      * @param {string} character
      */
     setRingSetting(character="A"){
-        // TODO: Validate Character
-        character = character.toUpperCase();
+        // Calculate offset
+        this.offset.ring = Rotor.FIXED.indexOf(character);
 
-        // Convert character to offset integer
-        this.offset = Rotor.FIXED.indexOf(character);
-
-        let output = [...this.alphabetRing];
-
-        // Index of character at wiring
-        let dotIndex        = this.wiring.indexOf("A") + this.offset;
-        let shiftedWiring   = [...this.wiring];
-
-        // Shift Wiring array characters by offset
-        for(let i=0; i < this.offset; i++){
-            shiftedWiring = shiftedWiring.map((letter) => {
-                let index = Rotor.FIXED.indexOf(letter) + 1;
-                return Rotor.FIXED[index];
-            });
+        // Shift alphabet ring
+        const shiftedRing = [...this.alphabetRing];
+        for(let i=0; i < this.offset.ring; i++){
+            const char = shiftedRing.pop();
+            shiftedRing.unshift(char);
         }
-        
-        // Rotate Wiring Array
-        for(let i=0; i < this.offset; i++){
-            const poppedChar = shiftedWiring.pop();
-            shiftedWiring.unshift(poppedChar);
-        }
-
-        // Debugging
-        console.log("Offset:    ", this.offset);
-        console.log("Dot Index: ", dotIndex);
-        console.log("Input:     ", this.alphabetRing.join(" "));
-        console.log("Init Wire: ", this.wiring.join(" "));
-        //console.log("Output:    ", output.join(" "));
-        console.log("Shift Wire:", shiftedWiring.join(" "));
-        console.log("POS of " + character + ":  ", shiftedWiring.indexOf(character));
+        // Assign to alphabet ring
+        this.alphabetRing = shiftedRing;
     }
 
     /**
@@ -213,5 +182,19 @@ export class Rotor {
      * - This is the character that is visible in the window
      * - This moves the entire assembly (alphabet ring and wiring) together
      */
-    setStartPosition(character="A"){}
+    setStartPosition(character="A"){
+        // Calculate rotations
+        const targetIndex = Rotor.FIXED.indexOf(character);
+        // Rotate
+        this.rotate(targetIndex);
+    }
+
+    /**
+     * Forward
+     */
+    forward(character="A"){
+        // Define signal
+        let signal = this.alphabetRing.indexOf(character);
+        return this.wiring[signal];
+    }
 }
