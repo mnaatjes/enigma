@@ -1,4 +1,4 @@
-import { ALPHABET } from "../../constants.js";
+import { ALPHABET } from "../constants.js";
 
 /**
  * @file src/components/Keyboard.js

@@ -1,4 +1,4 @@
-import { ALPHABET, REFLECTOR_CONFIGURATIONS } from "../../constants.js";
+import { ALPHABET, REFLECTOR_CONFIGURATIONS } from "../constants.js";
 /**-------------------------------------------------------------------------*/
 /**
  * @file src/components/Reflector.js

@@ -1,4 +1,4 @@
-import { ALPHABET, ROTOR_CONFIGURATIONS } from "../../constants.js";
+import { ALPHABET, ROTOR_CONFIGURATIONS } from "../constants.js";
 
 /**
  * Represents a single rotor of the Enigma Machine
